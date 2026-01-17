@@ -29,7 +29,7 @@ export default function useApi<T>(url: string, options: any = {}) {
       ...options.headers,
     },
     transform: (
-      response: T extends void ? unknown : T
+      response: T extends void ? unknown : T,
     ): T extends void ? unknown : T =>
       (response && typeof response === "object" && "data" in response
         ? response

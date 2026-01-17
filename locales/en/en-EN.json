@@ -4,5 +4,10 @@
     "home": "Home",
     "users": "Users",
     "objects": "Objects"
-  }
+  },
+  "login": "Login",
+  "full_name": "Full Name",
+  "enter_your_full_name_here": "Enter your full name here",
+  "password": "Password",
+  "enter_your_password_here": "Enter your password here"
 }

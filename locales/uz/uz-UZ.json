@@ -4,5 +4,10 @@
     "home": "Bosh sahifa",
     "users": "Foydalanuvchilar",
     "objects": "Obyektlar"
-  }
+  },
+  "login": "Kirish",
+  "full_name": "To'liq ism",
+  "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
+  "password": "Parol",
+  "enter_your_password_here": "Parolingizni shu yerga kiriting"
 }

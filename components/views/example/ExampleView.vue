@@ -12,7 +12,5 @@
 </template>
 
 <script setup lang="ts">
-
-const filterParams = ref({ currentPage: 1, pageSize: 10 })
-
+const filterParams = ref({ currentPage: 1, pageSize: 10 });
 </script>

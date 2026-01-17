@@ -4,8 +4,10 @@
       <el-table-column type="index" width="50" />
       <el-table-column prop="name" label="Name">
         <template #default="scope">
-          <div>{{ scope?.row?.profile?.lastName }} {{ scope?.row?.profile?.firstName }} {{
-            scope?.row?.profile?.middleName }}
+          <div>
+            {{ scope?.row?.profile?.lastName }}
+            {{ scope?.row?.profile?.firstName }}
+            {{ scope?.row?.profile?.middleName }}
           </div>
         </template>
       </el-table-column>
@@ -13,9 +15,19 @@
       <el-table-column prop="profile.birthday" label="Birthday" />
       <el-table-column prop="profile.photo" label="Photo">
         <template #default="scope">
-          <el-image style="width: 48px; height: 48px" :src="scope?.row?.profile?.photo" :zoom-rate="1.2" :max-scale="7"
-            :min-scale="0.2" :hide-on-click-modal="true" :preview-src-list="[scope?.row?.profile?.photo]" show-progress
-            :initial-index="4" :preview-teleported="true" fit="cover" />
+          <el-image
+            style="width: 48px; height: 48px"
+            :src="scope?.row?.profile?.photo"
+            :zoom-rate="1.2"
+            :max-scale="7"
+            :min-scale="0.2"
+            :hide-on-click-modal="true"
+            :preview-src-list="[scope?.row?.profile?.photo]"
+            show-progress
+            :initial-index="4"
+            :preview-teleported="true"
+            fit="cover"
+          />
         </template>
       </el-table-column>
 
@@ -25,9 +37,17 @@
             <!-- <el-button size="default" class="w-6 h-6" type="primary" :icon="ElIconEdit"
               @click="$emit('openFormDialog', true, scope?.row)" /> -->
 
-            <el-popconfirm title="Are you sure to delete this?" @confirm="deleteUser(scope?.row.id)">
+            <el-popconfirm
+              title="Are you sure to delete this?"
+              @confirm="deleteUser(scope?.row.id)"
+            >
               <template #reference>
-                <el-button size="default" class="w-6 h-6" type="danger" :icon="ElIconDelete" />
+                <el-button
+                  size="default"
+                  class="w-6 h-6"
+                  type="danger"
+                  :icon="ElIconDelete"
+                />
               </template>
             </el-popconfirm>
           </div>
@@ -40,9 +60,9 @@
 <script setup lang="ts">
 const props = defineProps({
   rows: { type: Array },
-})
+});
 
 const deleteUser = (id: number) => {
-  console.log('delete user', id)
-}
+  console.log("delete user", id);
+};
 </script>

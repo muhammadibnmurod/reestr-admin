@@ -9,4 +9,4 @@ export const navigation = [
     route: "/objects",
     icon: ElIconOfficeBuilding,
   },
-]
+];

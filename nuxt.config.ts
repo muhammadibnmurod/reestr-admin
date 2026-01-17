@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: false },
 
   components: [
@@ -9,23 +9,21 @@ export default defineNuxtConfig({
     { path: "~/components/layout", pathPrefix: false },
   ],
 
-  plugins: [
-    "@/plugins/pinia-persistedstate.js",
-  ],
+  plugins: ["@/plugins/pinia-persistedstate.js"],
 
   modules: [
-    '@element-plus/nuxt',
+    "@element-plus/nuxt",
     "@nuxtjs/tailwindcss",
     [
-      '@nuxtjs/color-mode',
+      "@nuxtjs/color-mode",
       {
-        preference: 'system',
-        fallback: 'light',
-        classSuffix: '',
+        preference: "system",
+        fallback: "light",
+        classSuffix: "",
       },
     ],
-    'nuxt-svgo',
-    "@nuxtjs/i18n"
+    "nuxt-svgo",
+    "@nuxtjs/i18n",
   ],
   elementPlus: {
     /** Options */
@@ -39,7 +37,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       NUXT_PUBLIC_API_BASE_URL: process.env.NUXT_PUBLIC_API_BASE_URL,
-    }
+    },
   },
 
   i18n: {
@@ -132,14 +130,11 @@ export default defineNuxtConfig({
   },
 
   // imports - autoImport
-  // If you want auto-import, set to true. 
+  // If you want auto-import, set to true.
   // If you don't need it, set to false or remove this option.
   imports: {
     autoImport: true,
   },
 
-  css: [
-    "@/assets/css/global.css",
-  ],
-
-})
+  css: ["@/assets/css/global.css"],
+});
