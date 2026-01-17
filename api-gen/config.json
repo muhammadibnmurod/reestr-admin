@@ -1,5 +1,5 @@
 {
-  "swaggerUrl": "https://noks.das-uty.uz/api/v1/docs-json",
+  "swaggerUrl": "https://reestr.das-uty.uz/api/docs-json",
   "outputFile": "apiMethods.ts",
   "outputPath": "../api/",
   "rmMethodPrefix": true

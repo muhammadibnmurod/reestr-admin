@@ -1,29 +1,25 @@
 <template>
-  <div class="flex min-h-[100vh] flex-col">
-    <div class="shrink-0 basis-auto border-b box-content border-[#dfdfdf]">
-      <AppNavbar
-        @toggle-sidebar="toggleSidebar"
-        :collapsible="isSidebarCollapsed"
-      />
-    </div>
+  <div class="flex h-screen overflow-hidden bg-gray-50 dark:bg-[#2a303c]">
+    <AppSidebar :isCollapse="isSidebarCollapsed" />
 
-    <div class="min-h-[calc(100vh-80px)] flex">
-      <AppSidebar :isCollapse="isSidebarCollapsed" />
-      <div
-        class="dark:bg-gray-700 relative min-h-[calc(100vh-80px)] p-6 w-full"
-      >
-        <NuxtPage class="h-full" />
-      </div>
+    <div class="flex flex-col flex-1 min-w-0">
+      <header class="shrink-0 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-[#1a1d24] z-40 h-20">
+        <AppNavbar @toggle-sidebar="toggleSidebar" :collapsed="isSidebarCollapsed" />
+      </header>
+
+      <main class="flex-1 p-6 overflow-y-auto bg-[#f8f9fa] dark:bg-[#2a303c]">
+        <NuxtPage />
+      </main>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from "vue"
 
-const isSidebarCollapsed = ref(false);
+const isSidebarCollapsed = ref(false)
 
 function toggleSidebar() {
-  isSidebarCollapsed.value = !isSidebarCollapsed.value;
+  isSidebarCollapsed.value = !isSidebarCollapsed.value
 }
 </script>

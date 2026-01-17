@@ -21,7 +21,7 @@ export default function useAuth() {
           refresh_token: refreshToken.value,
           token: accessToken.value,
         };
-        const { data, error } = await useApiService().auth.refresh_token(body);
+        const { data, error } = await useApiService().Auth.AuthController_refresh(body);
         if (error.value || !data.value) {
           clearTokens();
           return false;
@@ -44,13 +44,13 @@ export default function useAuth() {
 
   // NEW: set tokens (remember = true → 30 days; false → session)
   function setTokens(
-    payload: { access_token: string; refresh_token?: string },
+    payload: { accessToken: string; refreshToken?: string },
     remember = true,
   ) {
     const opts = remember ? { ...base, maxAge: 60 * 60 * 24 * 30 } : base;
-    useCookie("access_token", opts).value = payload.access_token;
-    if (payload.refresh_token)
-      useCookie("refresh_token", opts).value = payload.refresh_token;
+    useCookie("access_token", opts).value = payload.accessToken;
+    if (payload.refreshToken)
+      useCookie("refresh_token", opts).value = payload.refreshToken;
   }
 
   function clearTokens() {
