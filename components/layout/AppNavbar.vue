@@ -83,7 +83,7 @@
       </button> -->
 
       <!-- Language Dropdown -->
-      <el-dropdown trigger="click" placement="bottom-end">
+      <el-dropdown trigger="click" placement="bottom-end" class="max-w-20">
         <button
           class="flex items-center gap-2 p-2 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors">
           <img :src="flags[locale]?.flag" :alt="flags[locale]?.code" class="w-5 h-5 rounded object-cover" />
