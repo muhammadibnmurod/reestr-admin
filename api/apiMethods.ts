@@ -22,6 +22,7 @@ export const apiMethods = (options?: any) => {
       EmployeeController_create: (body: paths['/api/employee']['post']['requestBody']['content']['application/json']) => useApi<paths['/api/employee']['post']['responses']['201']['content']['application/json']>(`/api/employee`, { method: 'POST', body: body, ...options }),
       EmployeeController_update: (id: string | number, body: paths['/api/employee/{id}']['put']['requestBody']['content']['application/json']) => useApi<paths['/api/employee/{id}']['put']['responses']['200']['content']['application/json']>(`/api/employee/${id}`, { method: 'PUT', body: body, ...options }),
       EmployeeController_delete: (id: string | number) => useApi<void>(`/api/employee/${id}`, { method: 'DELETE', ...options }),
+      EmployeeController_getTree: () => useApi<paths['/api/employee/tree']['get']['responses']['200']>('/api/employee/tree', { method: 'GET', ...options }),
       EmployeeController_getAllByProjectID: (projectId: string | number) => useApi<paths['/api/employee/{projectId}']['get']['responses']['200']['content']['application/json']>(`/api/employee/${projectId}`, { method: 'GET', ...options }),
     },
     Project_Image: {

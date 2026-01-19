@@ -1,13 +1,56 @@
 {
-  "test": "test uz",
+  "common": {
+    "search": ""
+  },
+  "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
+  "enter_your_password_here": "Parolingizni shu yerga kiriting",
+  "full_name": "To'liq ism",
+  "login": "Kirish",
   "navigation": {
     "home": "Bosh sahifa",
-    "users": "Foydalanuvchilar",
-    "objects": "Obyektlar"
+    "objects": "Obyektlar",
+    "users": "Foydalanuvchilar"
   },
-  "login": "Kirish",
-  "full_name": "To'liq ism",
-  "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "password": "Parol",
-  "enter_your_password_here": "Parolingizni shu yerga kiriting"
+  "test": "test uz",
+  "common": {
+    "add": "Qo'shish",
+    "cancel": "Bekor qilish",
+    "ok": "OK",
+    "save": "Saqlash",
+    "search": "Qidirish"
+  },
+  "validation": {
+    "email": "Iltimos, to'g'ri elektron pochtaningizni kiriting",
+    "required": "Bu maydon majburiy",
+    "minLength": "Kamida {min} ta belgidan iborat bo'lishi kerak",
+    "maxLength": "Ko'pi bilan {max} ta belgidan iborat bo'lishi kerak"
+  },
+  "user": {
+    "title": "Foydalanuvchilar",
+    "add_user": "Foydalanuvchi qo'shish",
+    "edit_user": "Foydalanuvchini tahrirlash",
+    "delete_user": "Foydalanuvchini o'chirish",
+    "user_list": "Foydalanuvchilar ro'yxati",
+    "no_users_found": "Foydalanuvchilar topilmadi",
+    "createUser": "Foydalanuvchi yaratish",
+    "createDescription": "Yangi foydalanuvchini yaratish uchun quyidagi ma'lumotlarni to'ldiring.",
+    "create": "Yaratish",
+    "created": "Foydalanuvchi muvaffaqiyatli yaratildi",
+    "selectImage": "Rasmni tanlang",
+    "fullName": "To'liq ism",
+    "enterFullName": "To'liq ismni kiriting",
+    "username": "Foydalanuvchi nomi",
+    "enterUsername": "Foydalanuvchi nomini kiriting",
+    "password": "Parol",
+    "enterPassword": "Parolni kiriting",
+    "role": "Rol",
+    "selectRole": "Rolni tanlang",
+    "edit": "Tahrirlash"
+  } ,
+  "messages": {
+    "userCreated": "Foydalanuvchi muvaffaqiyatli yaratildi.",
+    "userUpdated": "Foydalanuvchi muvaffaqiyatli yangilandi.",
+    "imageUploaded": "Rasm muvaffaqiyatli yuklandi."
+  }
 }

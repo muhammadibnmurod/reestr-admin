@@ -13,3 +13,42 @@ body {
 .el-dialog {
   @apply !my-10 !overflow-y-auto;
 }
+
+/* Element Plus Table Customization */
+.el-table {
+  --el-table-header-bg-color: #f8fafc;
+  --el-table-row-hover-bg-color: #f1f5f9;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+html.dark {
+  /* Inputning asosiy fon rangi o'zgaruvchisi */
+  --el-input-bg-color: #2b2b2b;
+
+  /* Border rangi */
+  --el-input-border-color: #454545;
+
+  /* Matn rangi */
+  --el-input-text-color: #cfd3dc;
+}
+
+.dark .el-table {
+  --el-table-header-bg-color: #0f172a;
+  --el-table-bg-color: #1e293b;
+  --el-table-tr-bg-color: #1e293b;
+  --el-table-row-hover-bg-color: #334155;
+  --el-table-border-color: #334155;
+}
+
+/* Ensure Element Plus input inner uses the CSS variables when dark mode is active.
+   This targets the actual input element that shows the background. */
+.dark .el-input__inner {
+  --el-input-bg-color: #000;
+  color: var(--el-input-text-color, #111827) !important;
+  border-color: var(--el-input-border-color, #d1d5db) !important;
+}
+
+.el-table th.el-table__cell {
+  @apply font-semibold text-slate-600 dark:text-slate-300 uppercase text-xs tracking-wider;
+}

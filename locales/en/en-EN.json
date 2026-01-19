@@ -9,5 +9,45 @@
   "full_name": "Full Name",
   "enter_your_full_name_here": "Enter your full name here",
   "password": "Password",
-  "enter_your_password_here": "Enter your password here"
+  "enter_your_password_here": "Enter your password here",
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "save": "Save",
+    "add": "Add",
+    "search": "Search"
+  },
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be no more than {max} characters",
+    "email": "Please enter a valid email address"
+  },
+  "user": {
+    "title": "Users",
+    "add_user": "Add User",
+    "edit_user": "Edit User",
+    "delete_user": "Delete User",
+    "user_list": "User List",
+    "no_users_found": "No users found",
+    "createUser": "Create User",
+    "createDescription": "Fill in the details below to create a new user.",
+    "create": "Create",
+    "created": "User created successfully",
+    "selectImage": "Select Image",
+    "fullName": "Full Name",
+    "enterFullName": "Enter full name",
+    "username": "Username",
+    "enterUsername": "Enter username",
+    "password": "Password",
+    "enterPassword": "Enter password",
+    "role": "Role",
+    "selectRole": "Select role",
+    "edit": "Edit User"
+  },
+  "messages": {
+    "userCreated": "The user has been created successfully.",
+    "userUpdated": "The user has been updated successfully.",
+    "imageUploaded": "The image has been uploaded successfully."
+  }
 }

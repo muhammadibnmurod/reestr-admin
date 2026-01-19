@@ -7,7 +7,7 @@
         <AppNavbar @toggle-sidebar="toggleSidebar" :collapsed="isSidebarCollapsed" />
       </header>
 
-      <main class="flex-1 p-6 overflow-y-auto bg-[#f8f9fa] dark:bg-[#2a303c]">
+      <main class="flex-1 p-6 overflow-y-auto bg-[#f8f9fa] dark:bg-[#1e222b]">
         <NuxtPage />
       </main>
     </div>
@@ -16,6 +16,17 @@
 
 <script setup>
 import { ref } from "vue"
+
+const { data } = useApiService().User.UserController_getMe()
+
+const userInformation = {
+  name: data.fullName,
+  role: data.role
+
+}
+
+console.log('User Information', userInformation);
+
 
 const isSidebarCollapsed = ref(false)
 

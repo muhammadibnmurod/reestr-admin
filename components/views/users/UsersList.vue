@@ -1,53 +1,102 @@
+<script setup lang="ts">
+import { Edit, Delete } from "@element-plus/icons-vue";
+
+defineProps<{
+  data: any[];
+}>();
+
+const emit = defineEmits(["delete", "edit"]);
+
+const getStatusColor = (status: string) => {
+  return status === "Active" ? "#10b981" : "#ef4444";
+};
+</script>
+
 <template>
-  <div>
-    <el-table :data="rows" stripe style="width: 99%">
-      <el-table-column type="index" width="50" />
-      <el-table-column prop="name" label="Name">
+  <div class="users-table-wrapper">
+    <el-table
+      :data="data"
+      style="width: 100%"
+      :header-cell-style="{
+        background: '#f9fafb',
+        color: '#6b7280',
+        fontSize: '14px',
+        fontWeight: '500',
+      }"
+    >
+      <!-- Checkbox Column -->
+      <el-table-column type="selection" width="55" />
+
+      <!-- Full Name with Avatar -->
+      <el-table-column label="Full name" min-width="200">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <i class="el-icon-user text-gray-500" />
+            <span>Full name</span>
+          </div>
+        </template>
         <template #default="scope">
-          <div>
-            {{ scope?.row?.profile?.lastName }}
-            {{ scope?.row?.profile?.firstName }}
-            {{ scope?.row?.profile?.middleName }}
+          <div class="flex items-center gap-3">
+            <el-avatar
+              :size="40"
+              :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${scope.row.fullName}`"
+            />
+            <span class="font-medium text-gray-900 dark:text-white">
+              {{ scope.row.fullName }}
+            </span>
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="profile.position" label="Position" />
-      <el-table-column prop="profile.birthday" label="Birthday" />
-      <el-table-column prop="profile.photo" label="Photo">
+
+      <!-- Role -->
+      <el-table-column label="Role" width="180">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <i class="el-icon-user text-gray-500" />
+            <span>Role</span>
+          </div>
+        </template>
         <template #default="scope">
-          <el-image
-            style="width: 48px; height: 48px"
-            :src="scope?.row?.profile?.photo"
-            :zoom-rate="1.2"
-            :max-scale="7"
-            :min-scale="0.2"
-            :hide-on-click-modal="true"
-            :preview-src-list="[scope?.row?.profile?.photo]"
-            show-progress
-            :initial-index="4"
-            :preview-teleported="true"
-            fit="cover"
-          />
+          <span class="text-gray-700 dark:text-gray-300">
+            {{ scope.row.role }}
+          </span>
         </template>
       </el-table-column>
-
-      <el-table-column label="Actions" width="250">
+      <!-- Actions -->
+      <el-table-column label="Actions" width="150" fixed="right">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <i class="el-icon-setting text-gray-500" />
+            <span>Actions</span>
+          </div>
+        </template>
         <template #default="scope">
-          <div class="flex gap-2 items-center">
-            <!-- <el-button size="default" class="w-6 h-6" type="primary" :icon="ElIconEdit"
-              @click="$emit('openFormDialog', true, scope?.row)" /> -->
+          <div class="flex items-center gap-2">
+            <el-button
+              size="small"
+              :icon="Edit"
+              @click="$emit('edit', scope.row)"
+              link
+              class="!text-gray-600 hover:!text-blue-600"
+            >
+              Edit
+            </el-button>
 
             <el-popconfirm
-              title="Are you sure to delete this?"
-              @confirm="deleteUser(scope?.row.id)"
+              title="Are you sure to delete this user?"
+              confirm-button-text="Yes"
+              cancel-button-text="No"
+              @confirm="$emit('delete', scope.row.id)"
             >
               <template #reference>
                 <el-button
-                  size="default"
-                  class="w-6 h-6"
-                  type="danger"
-                  :icon="ElIconDelete"
-                />
+                  size="small"
+                  :icon="Delete"
+                  link
+                  class="!text-gray-600 hover:!text-red-600"
+                >
+                  Delete
+                </el-button>
               </template>
             </el-popconfirm>
           </div>
@@ -57,12 +106,36 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const props = defineProps({
-  rows: { type: Array },
-});
+<style scoped>
+.users-table-wrapper {
+  @apply bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700;
+}
 
-const deleteUser = (id: number) => {
-  console.log("delete user", id);
-};
-</script>
+:deep(.el-table) {
+  @apply bg-transparent;
+}
+
+:deep(.el-table__header-wrapper) {
+  @apply bg-gray-50 dark:bg-gray-900;
+}
+
+:deep(.el-table th.el-table__cell) {
+  @apply bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 font-medium;
+}
+
+:deep(.el-table tr) {
+  @apply bg-white dark:bg-gray-800;
+}
+
+:deep(.el-table tbody tr:hover > td) {
+  @apply bg-gray-50 dark:bg-gray-700/50;
+}
+
+:deep(.el-table td.el-table__cell) {
+  @apply border-gray-200 dark:border-gray-700;
+}
+
+:deep(.cell) {
+  @apply text-gray-900 dark:text-white;
+}
+</style>
