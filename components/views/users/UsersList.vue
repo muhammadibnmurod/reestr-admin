@@ -7,6 +7,14 @@ defineProps<{
 
 const emit = defineEmits(["delete", "edit"]);
 
+const getImageUrl = (imagePath: string) => {
+  if (!imagePath) return "";
+  // Backend dan to'liq URL kelsa
+  if (imagePath.startsWith("http")) return imagePath;
+  // Relative path kelsa
+  return `https://reestr.das-uty.uz/${imagePath}`;
+};
+
 const getStatusColor = (status: string) => {
   return status === "Active" ? "#10b981" : "#ef4444";
 };
@@ -37,10 +45,10 @@ const getStatusColor = (status: string) => {
         </template>
         <template #default="scope">
           <div class="flex items-center gap-3">
-            <el-avatar
-              :size="40"
-              :src="`https://api.dicebear.com/7.x/avataaars/svg?seed=${scope.row.fullName}`"
-            />
+            <el-avatar :size="40" :src="getImageUrl(scope.row.image)">
+              {{ scope.row.fullName?.charAt(0) }}
+              {{ console.log("Scope row image",scope.row.image) }}
+            </el-avatar>
             <span class="font-medium text-gray-900 dark:text-white">
               {{ scope.row.fullName }}
             </span>
