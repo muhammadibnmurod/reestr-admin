@@ -1,6 +1,11 @@
 {
   "common": {
-    "search": ""
+    "search": "",
+    "create": "Yaratish",
+    "add": "Qo'shish",
+    "cancel": "Bekor qilish",
+    "ok": "OK",
+    "save": "Saqlash"
   },
   "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "enter_your_password_here": "Parolingizni shu yerga kiriting",
@@ -9,7 +14,8 @@
   "navigation": {
     "home": "Bosh sahifa",
     "objects": "Obyektlar",
-    "users": "Foydalanuvchilar"
+    "users": "Foydalanuvchilar",
+    "employees": "Xodimlar"
   },
   "password": "Parol",
   "test": "test uz",
@@ -52,5 +58,18 @@
     "userCreated": "Foydalanuvchi muvaffaqiyatli yaratildi.",
     "userUpdated": "Foydalanuvchi muvaffaqiyatli yangilandi.",
     "imageUploaded": "Rasm muvaffaqiyatli yuklandi."
+  },
+  "employee": {
+    "add": "Xodim qo'shish",
+    "edit": "Xodimni tahrirlash",
+    "delete": "Xodimni o'chirish",
+    "list": "Xodimlar ro'yxati",
+    "title": "Xodimlar",
+    "add_employee": "Xodim qo'shish",
+    "edit_employee": "Xodimni tahrirlash",
+    "delete_employee": "Xodimni o'chirish",
+    "employee_list": "Xodimlar ro'yxati",
+    "no_employees_found": "Xodimlar topilmadi",
+    "createEmployee": "Xodim yaratish"
   }
 }

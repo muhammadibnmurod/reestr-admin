@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     [
       "@nuxtjs/color-mode",
       {
-        preference: "system",
+        preference: "light",
         fallback: "light",
         classSuffix: "",
       },

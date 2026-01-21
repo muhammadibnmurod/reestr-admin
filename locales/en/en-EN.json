@@ -3,7 +3,8 @@
   "navigation": {
     "home": "Home",
     "users": "Users",
-    "objects": "Objects"
+    "objects": "Objects",
+    "employees": "Employees"
   },
   "login": "Login",
   "full_name": "Full Name",
@@ -15,7 +16,8 @@
     "cancel": "Cancel",
     "save": "Save",
     "add": "Add",
-    "search": "Search"
+    "search": "Search",
+    "create": "Create"
   },
   "validation": {
     "required": "This field is required",
@@ -49,5 +51,30 @@
     "userCreated": "The user has been created successfully.",
     "userUpdated": "The user has been updated successfully.",
     "imageUploaded": "The image has been uploaded successfully."
+  },
+  "employee": {
+    "add": "Add Employee",
+    "edit": "Edit Employee",
+    "delete": "Delete Employee",
+    "list": "Employee List",
+    "title": "Employees",
+    "add_employee": "Add Employee",
+    "edit_employee": "Edit Employee",
+    "delete_employee": "Delete Employee",
+    "employee_list": "Employee List",
+    "no_employees_found": "No employees found",
+    "createEmployee": "Create Employee",
+    "createDescription": "Fill in the details below to create a new employee.",
+    "create": "Create",
+    "created": "Employee created successfully",
+    "fullName": "Full Name",
+    "enterFullName": "Enter full name",
+    "position": "Position",
+    "enterPosition": "Enter position",
+    "department": "Department",
+    "enterDepartment": "Enter department",
+    "edit": "Edit Employee",
+    "selectImage": "Select Image",
+    "createEmployee": "Create Employee"
   }
 }
