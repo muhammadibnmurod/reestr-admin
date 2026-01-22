@@ -12,7 +12,7 @@ const getImageUrl = (imagePath: string) => {
   // Backend dan to'liq URL kelsa
   if (imagePath.startsWith("http")) return imagePath;
   // Relative path kelsa
-  return `https://reestr.das-uty.uz/${imagePath}`;
+  return `https://reestr.das-uty.uz/api/${imagePath}`;
 };
 
 const getStatusColor = (status: string) => {
@@ -36,25 +36,39 @@ const getStatusColor = (status: string) => {
       <el-table-column type="selection" width="55" />
 
       <!-- Full Name with Avatar -->
-      <el-table-column label="Full name" min-width="200">
-        <template #header>
-          <div class="flex items-center gap-2">
-            <i class="el-icon-user text-gray-500" />
-            <span>Full name</span>
-          </div>
-        </template>
-        <template #default="scope">
-          <div class="flex items-center gap-3">
-            <el-avatar :size="40" :src="getImageUrl(scope.row.image)">
+<el-table-column label="Full name" min-width="200">
+  <template #header>
+    <div class="flex items-center gap-2">
+      <i class="el-icon-user text-gray-500" />
+      <span>Full name</span>
+    </div>
+  </template>
+
+  <template #default="scope">
+    <div class="flex items-center gap-3">
+      <div class="relative flex items-center justify-center overflow-hidden rounded-full" style="width: 40px; height: 40px;">
+        <el-image
+          :src="getImageUrl(scope.row.image)"
+          :preview-src-list="[getImageUrl(scope.row.image)]"
+          :initial-index="0"
+          fit="cover"
+          preview-teleported
+          class="w-full h-full cursor-pointer hover:opacity-80 transition-opacity"
+        >
+          <template #error>
+            <div class="flex h-full w-full items-center justify-center bg-gray-200 text-gray-600 font-bold uppercase">
               {{ scope.row.fullName?.charAt(0) }}
-              {{ console.log("Scope row image",scope.row.image) }}
-            </el-avatar>
-            <span class="font-medium text-gray-900 dark:text-white">
-              {{ scope.row.fullName }}
-            </span>
-          </div>
-        </template>
-      </el-table-column>
+            </div>
+          </template>
+        </el-image>
+      </div>
+
+      <span class="font-medium text-gray-900 dark:text-white">
+        {{ scope.row.fullName }}
+      </span>
+    </div>
+  </template>
+</el-table-column>
 
       <!-- Role -->
       <el-table-column label="Role" width="180">
