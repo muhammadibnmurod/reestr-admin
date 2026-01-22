@@ -1,3 +1,5 @@
+
+
 export const navigation = [
   {
     title: "navigation.users",
@@ -13,5 +15,20 @@ export const navigation = [
     title: "navigation.employees",
     route: "/employees",
     icon: ElIconUserFilled,
+  },
+  {
+    title: 'navigation.presentations',
+    route: '/presentations',
+    icon: ElIconDocument,
+  },
+  {
+    title: "navigation.projects",
+    route: "/projects",
+    icon: ElIconFolder,
+  },
+  {
+    title: "navigation.organizations",
+    route: "/organizations",
+    icon: ElIconSchool,
   }
 ];

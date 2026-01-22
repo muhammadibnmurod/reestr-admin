@@ -15,7 +15,10 @@
     "home": "Bosh sahifa",
     "objects": "Obyektlar",
     "users": "Foydalanuvchilar",
-    "employees": "Xodimlar"
+    "employees": "Xodimlar",
+    "presentations": "Taqdimotlar",
+    "projects": "Loyihalar",
+    "organizations": "Tashkilotlar"
   },
   "password": "Parol",
   "test": "test uz",

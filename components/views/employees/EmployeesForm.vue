@@ -13,6 +13,7 @@
     :lock-scroll="true"
     class="modern-employee-dialog"
     destroy-on-close
+    append-to-body
   >
     <div class="dialog-content">
       <!-- Header -->
@@ -241,10 +242,11 @@ const onCancel = () => {
 <style scoped>
 .modern-employee-dialog :deep(.el-dialog) {
   @apply bg-white dark:bg-gray-900 rounded-xl shadow-2xl;
-  max-height: 90vh;
+  max-height: 85vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
-  margin: 0 !important;
+  margin: auto !important;
   overflow: hidden;
 }
 
@@ -258,6 +260,7 @@ const onCancel = () => {
   @apply border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900;
   flex-shrink: 0;
   padding: 20px 24px 16px;
+  margin: 0;
 }
 
 .modern-employee-dialog :deep(.el-dialog__body) {
@@ -267,6 +270,13 @@ const onCancel = () => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
+}
+
+.modern-employee-dialog :deep(.el-dialog__footer) {
+  flex-shrink: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .dialog-content {
@@ -274,6 +284,7 @@ const onCancel = () => {
   flex-direction: column;
   height: 100%;
   overflow: hidden;
+  min-height: 0;
 }
 
 .dialog-content > div:first-child {
@@ -286,6 +297,7 @@ const onCancel = () => {
   overflow-y: auto;
   overflow-x: hidden;
   padding: 24px;
+  min-height: 0;
 }
 
 .dialog-scrollable-content::-webkit-scrollbar {
@@ -300,6 +312,10 @@ const onCancel = () => {
 .dialog-scrollable-content::-webkit-scrollbar-thumb {
   @apply bg-gray-300 dark:bg-gray-600;
   border-radius: 3px;
+}
+
+.dialog-scrollable-content::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-gray-500;
 }
 
 .modern-form :deep(.el-form-item__label) {

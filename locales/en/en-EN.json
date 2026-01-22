@@ -4,7 +4,10 @@
     "home": "Home",
     "users": "Users",
     "objects": "Objects",
-    "employees": "Employees"
+    "employees": "Employees",
+    "presentations": "Presentations",
+    "projects": "Projects",
+    "organizations": "Organizations"
   },
   "login": "Login",
   "full_name": "Full Name",

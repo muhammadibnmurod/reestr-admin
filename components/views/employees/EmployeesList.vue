@@ -116,7 +116,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { Edit, Delete } from "@element-plus/icons-vue";
+import { Edit, Delete, View } from "@element-plus/icons-vue";
 
 const props = defineProps<{
   employees: any[];
@@ -146,7 +146,7 @@ const pageSizeModel = computed({
 
 const getImageUrl = (imagePath: string) => {
   if (!imagePath) return "";
-  return `https://reestr.das-uty.uz/${imagePath}`;
+  return `https://reestr.das-uty.uz/api/${imagePath}`;
 };
 
 const formatDate = (dateString: string) => {

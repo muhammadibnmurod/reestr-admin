@@ -12,5 +12,6 @@
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue';
 const filterParams = ref({ currentPage: 1, pageSize: 10 });
 </script>

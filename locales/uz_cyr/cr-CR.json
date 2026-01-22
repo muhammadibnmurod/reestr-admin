@@ -4,7 +4,10 @@
     "home": "Бош саҳифа",
     "users": "Фойдаланувчилар",
     "objects": "Объектлар",
-    "employees": "Ходимлар"
+    "employees": "Ходимлар",
+    "presentations": "Тақдимотлар",
+    "projects": "Лойиҳалар",
+    "organizations": "Ташкилотлар"
   },
   "login": "Кириш",
   "full_name": "Тўлиқ исм",

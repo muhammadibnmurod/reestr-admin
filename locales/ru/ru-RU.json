@@ -4,7 +4,10 @@
     "home": "Главная",
     "users": "Пользователи",
     "objects": "Объекты",
-    "employees": "Сотрудники"
+    "employees": "Сотрудники",
+    "presentations": "Презентации",
+    "projects": "Проекты",
+    "organizations": "Организации"
   },
   "login": "Вход",
   "full_name": "Полное имя",

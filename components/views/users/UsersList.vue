@@ -12,7 +12,7 @@ const getImageUrl = (imagePath: string) => {
   // Backend dan to'liq URL kelsa
   if (imagePath.startsWith("http")) return imagePath;
   // Relative path kelsa
-  return `https://reestr.das-uty.uz/${imagePath}`;
+  return `https://reestr.das-uty.uz/api/${imagePath}`;
 };
 
 const getStatusColor = (status: string) => {

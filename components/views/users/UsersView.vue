@@ -85,7 +85,7 @@ const filterParams = reactive({
 
   pagSize: 10,
 
-  search: "dfgh",
+  search: "",
 });
 
 const handleSizeChange = (newSize: number) => {
