@@ -9,17 +9,30 @@
     >
       <el-table-column type="index" width="60" label="#" />
 
-      <el-table-column label="Rasm" width="100">
-        <template #default="{ row }">
-          <el-avatar
-            :size="50"
-            :src="getImageUrl(row.image)"
-            class="border-2 border-gray-200"
-          >
+<el-table-column label="Rasm" width="100">
+  <template #default="{ row }">
+    <div class="flex items-center justify-center">
+      <el-image
+        style="width: 50px; height: 50px; border-radius: 50%"
+        :src="getImageUrl(row.image)"
+        :zoom-rate="1.2"
+        :max-scale="7"
+        :min-scale="0.2"
+        :preview-src-list="[getImageUrl(row.image)]"
+        :initial-index="0"
+        fit="cover"
+        preview-teleported
+        class="border-2 border-gray-200 cursor-pointer"
+      >
+        <template #error>
+          <div class="flex h-full w-full items-center justify-center bg-gray-100 text-gray-500">
             {{ row.fullNameUz?.charAt(0) }}
-          </el-avatar>
+          </div>
         </template>
-      </el-table-column>
+      </el-image>
+    </div>
+  </template>
+</el-table-column>
 
       <el-table-column prop="fullNameUz" label="F.I.O" min-width="200">
         <template #default="{ row }">
@@ -71,6 +84,7 @@
               <el-button
                 type="info"
                 size="small"
+                :icon="View"
                 circle
                 plain
                 class="!w-9 !h-9  transition-transform shadow-sm hover:shadow-md"

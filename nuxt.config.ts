@@ -31,7 +31,11 @@ export default defineNuxtConfig({
 
   devServer: {
     host: "*",
+<<<<<<< HEAD
     port: 9000,
+=======
+    port: 3000,
+>>>>>>> 2e68a64343a5c0e85494962497e7af0fcbe91307
   },
 
   runtimeConfig: {
