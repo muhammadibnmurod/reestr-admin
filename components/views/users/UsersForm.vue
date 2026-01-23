@@ -1,12 +1,13 @@
 <template>
   <el-dialog
     v-model="isOpen"
-    width="600px"
+    width="650px"
     align-center
     append-to-body
     destroy-on-close
     class="user-dialog"
   >
+    <!-- HEADER -->
     <template #header>
       <div
         class="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700"
@@ -15,7 +16,7 @@
           class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg"
         >
           <el-icon :size="18" class="text-white">
-            <component :is="isEditMode ? 'Edit' : 'Plus'" />
+            <component :is="isEditMode ? Edit : Plus" />
           </el-icon>
         </div>
 
@@ -35,7 +36,7 @@
     </template>
 
     <!-- BODY (scroll faqat shu joyda) -->
-    <div class="px-6 py-5">
+    <div class="body-scroll px-6 py-5">
       <el-form
         ref="formRef"
         size="default"
@@ -43,7 +44,7 @@
         :model="formState"
         @submit.prevent
       >
-        <!-- Avatar (compact) -->
+        <!-- Avatar -->
         <div class="mb-6 flex flex-col items-center">
           <div v-loading="imageUploading" class="relative">
             <div class="relative group">
@@ -106,18 +107,12 @@
           </div>
         </div>
 
-        <!-- Fields -->
+        <!-- FIELDS -->
         <div class="space-y-4">
           <el-form-item
             :label="$t('user.fullName')"
             prop="fullName"
-            :rules="[
-              {
-                required: true,
-                message: t('messages.required') || 'Majburiy',
-                trigger: 'blur',
-              },
-            ]"
+            :rules="[{ required: true, message: requiredMsg, trigger: 'blur' }]"
           >
             <el-input
               v-model="formState.fullName"
@@ -130,13 +125,7 @@
           <el-form-item
             :label="$t('user.username')"
             prop="username"
-            :rules="[
-              {
-                required: true,
-                message: t('messages.required') || 'Majburiy',
-                trigger: 'blur',
-              },
-            ]"
+            :rules="[{ required: true, message: requiredMsg, trigger: 'blur' }]"
           >
             <el-input
               v-model="formState.username"
@@ -152,13 +141,7 @@
             :rules="
               isEditMode
                 ? []
-                : [
-                    {
-                      required: true,
-                      message: t('messages.required') || 'Majburiy',
-                      trigger: 'blur',
-                    },
-                  ]
+                : [{ required: true, message: requiredMsg, trigger: 'blur' }]
             "
           >
             <el-input
@@ -179,18 +162,13 @@
             :label="$t('user.role')"
             prop="role"
             :rules="[
-              {
-                required: true,
-                message: t('messages.required') || 'Majburiy',
-                trigger: 'change',
-              },
+              { required: true, message: requiredMsg, trigger: 'change' },
             ]"
           >
             <el-select
               v-model="formState.role"
               :placeholder="$t('user.selectRole')"
               class="w-full"
-              size="default"
             >
               <el-option
                 v-for="opt in UserRoleOptions"
@@ -210,14 +188,42 @@
               </el-option>
             </el-select>
           </el-form-item>
+
+          <!-- ✅ ORGANIZATION SELECT -->
+          <el-form-item
+            label="Organization"
+            prop="organizationId"
+            :rules="[
+              { required: true, message: requiredMsg, trigger: 'change' },
+            ]"
+          >
+            <el-select
+              v-model="formState.organizationId"
+              class="w-full"
+              filterable
+              clearable
+              :loading="orgLoading"
+              placeholder="Organization tanlang..."
+            >
+              <el-option
+                v-for="org in organizations"
+                :key="org.id"
+                :label="getOrgLabel(org)"
+                :value="org.id"
+              />
+            </el-select>
+
+            <div v-if="orgError" class="text-xs text-red-500 mt-1">
+              {{ orgError }}
+            </div>
+          </el-form-item>
         </div>
       </el-form>
     </div>
 
+    <!-- FOOTER -->
     <template #footer>
-      <div
-        class="flex items-center justify-end gap-3 px-6 "
-      >
+      <div class="footer-bar px-6 py-4">
         <el-button size="default" @click="onCancel" :disabled="saveLoading">
           {{ $t("common.cancel") }}
         </el-button>
@@ -241,7 +247,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance, UploadFile, UploadInstance } from "element-plus";
 import {
@@ -261,6 +267,8 @@ import { UserRole } from "@/enums/UserRole";
 import { UserRoleOptions } from "@/constants/user-role";
 
 const { t } = useI18n();
+
+const requiredMsg = computed(() => t("messages.required") || "Majburiy");
 
 const props = defineProps<{
   open?: boolean;
@@ -282,11 +290,18 @@ const imageUploading = ref(false);
 const imagePreview = ref("");
 const uploadedImagePath = ref("");
 
+// ✅ organizations list
+const organizations = ref<any[]>([]);
+const orgLoading = ref(false);
+const orgError = ref("");
+
 const formState = ref({
   fullName: "",
   username: "",
   password: "",
+  image: "",
   role: UserRole.USER,
+  organizationId: null as number | null,
 });
 
 watch(
@@ -294,6 +309,38 @@ watch(
   (v) => (isOpen.value = !!v),
 );
 watch(isOpen, (v) => emit("update:open", v));
+
+const getOrgLabel = (org: any) => {
+  try {
+    // agar translation composable bo'lsa:
+    if (org?.name && typeof useGetTranslation === "function") {
+      return useGetTranslation(org.name);
+    }
+  } catch {}
+  // fallback:
+  return org?.name?.uz || org?.name?.en || org?.name?.ru || `ID: ${org?.id}`;
+};
+
+const fetchOrganizations = async () => {
+  orgError.value = "";
+  orgLoading.value = true;
+  try {
+    const { data } = await api.get("/organizations", {
+      params: { page: 1, size: 1000 },
+    });
+
+    organizations.value = data?.data?.data ?? data?.data ?? [];
+  } catch (e: any) {
+    orgError.value =
+      e.response?.data?.message || "Organization yuklashda xatolik";
+  } finally {
+    orgLoading.value = false;
+  }
+};
+
+onMounted(() => {
+  fetchOrganizations();
+});
 
 const triggerUpload = () => {
   if (imageUploading.value) return;
@@ -306,7 +353,6 @@ const handleImageChange = async (file: UploadFile) => {
   if (file.raw.size > 5 * 1024 * 1024) {
     return ElMessage.error(t("messages.fileTooLarge") || "Max 5MB");
   }
-
   if (!file.raw.type.startsWith("image/")) {
     return ElMessage.error("Faqat rasm");
   }
@@ -352,8 +398,10 @@ const onSubmit = async () => {
       username: formState.value.username,
       role: formState.value.role,
       image: uploadedImagePath.value || null,
+      organizationId: formState.value.organizationId, // ✅
     };
 
+    // create mode'da password majburiy, edit'da ixtiyoriy
     if (formState.value.password) payload.password = formState.value.password;
 
     if (props.isEditMode && props.editData?.id) {
@@ -380,22 +428,29 @@ const onCancel = () => {
 watch(isOpen, (val) => {
   if (!val) return;
 
+  // org list bo'lmasa ham, modal ochilganda qayta chaqirib qo'yamiz
+  if (!organizations.value.length) fetchOrganizations();
+
   if (props.isEditMode && props.editData) {
     formState.value = {
       fullName: props.editData.fullName || "",
       username: props.editData.username || "",
       password: "",
+      image: props.editData.image || "",
       role: props.editData.role || UserRole.USER,
+      organizationId: props.editData.organizationId ?? null,
     };
 
-    imagePreview.value = props.editData.image ? props.editData.image : "";
-    uploadedImagePath.value = props.editData.image ? props.editData.image : "";
+    imagePreview.value = props.editData.image || "";
+    uploadedImagePath.value = props.editData.image || "";
   } else {
     formState.value = {
       fullName: "",
       username: "",
       password: "",
+      image: "",
       role: UserRole.USER,
+      organizationId: null,
     };
     imagePreview.value = "";
     uploadedImagePath.value = "";
@@ -419,12 +474,23 @@ watch(isOpen, (val) => {
   @apply !p-0;
 }
 
-/* ✅ Faqat BODY scroll (modal qotib turadi) */
+/* ✅ Modal qotadi: body scroll */
 :deep(.el-dialog__body) {
-  @apply !p-0 max-h-[60vh] md:max-h-[65vh] overflow-y-auto;
+  @apply !p-0 overflow-hidden;
 }
 
-/* Label ko'k bo'lib highlight ko'rinmasin */
+/* ✅ faqat ichidagi body-scroll scroll bo‘ladi */
+.body-scroll {
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* footer */
+.footer-bar {
+  @apply flex items-center justify-end gap-3 py-2;
+}
+
+/* label */
 :deep(.el-form-item__label) {
   @apply text-gray-700 dark:text-gray-300 font-medium select-none;
 }

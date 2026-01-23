@@ -135,24 +135,16 @@ const pageSizeModel = computed({
               </el-tooltip>
 
               <!-- DELETE -->
-              <el-popconfirm
-                title="Haqiqatdan ham o‘chirmoqchimisiz?"
-                confirm-button-text="Ha"
-                cancel-button-text="Yo‘q"
-                @confirm="emit('delete', row.id)"
-              >
-                <template #reference>
-                  <el-tooltip content="O‘chirish" placement="top">
-                    <el-button
-                      circle
-                      size="small"
-                      class="action-btn action-delete !p-0"
-                    >
-                      <el-icon :size="16"><Delete /></el-icon>
-                    </el-button>
-                  </el-tooltip>
-                </template>
-              </el-popconfirm>
+              <el-tooltip content="O‘chirish" placement="top">
+                <el-button
+                  circle
+                  size="small"
+                  class="action-btn action-delete !p-0"
+                  @click="emit('delete', row)"
+                >
+                  <el-icon :size="16"><Delete /></el-icon>
+                </el-button>
+              </el-tooltip>
             </div>
           </template>
         </el-table-column>

@@ -1,6 +1,6 @@
 <template>
   <div
-     class="flex flex-col gap-6 p-6  !pb-12 bg-gray-50 dark:bg-gray-900 overflow-x-hidden"
+     class=" h-[calc(100vh-164px)] overflow-hidden flex flex-col gap-6 p-6  !pb-12 bg-gray-50 dark:bg-gray-900 overflow-x-hidden"
   >
     <!-- FORM DIALOG -->
     <PresentationForm

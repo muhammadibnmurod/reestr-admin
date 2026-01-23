@@ -1,5 +1,7 @@
 <template>
-  <div class="h-screen overflow-hidden bg-gray-50 dark:bg-[#1e222b] flex flex-col">
+  <div
+    class="h-screen overflow-hidden bg-gray-50 dark:bg-[#1e222b] flex flex-col"
+  >
     <UsersForm
       v-model:open="formDialog"
       :isEditMode="isEditMode"
@@ -66,7 +68,7 @@
 <script setup lang="ts">
 import api from "@/utils/axios";
 import { Plus as ElIconPlus } from "@element-plus/icons-vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const users = ref<any[]>([]);
 const loading = ref(false);
@@ -99,12 +101,30 @@ const openFormDialog = (editDataParam: any = null) => {
   formDialog.value = true;
 };
 
-const onDelete = async (id: string) => {
+const onDelete = async (row: any) => {
   try {
+    await ElMessageBox.confirm(
+      `${row.fullName || row.username} foydalanuvchisini o‘chirmoqchimisiz?`,
+      "Tasdiqlash",
+      {
+        confirmButtonText: "Ha, o‘chirish",
+        cancelButtonText: "Bekor qilish",
+        type: "warning",
+        // modal doim yuqorida turishi uchun:
+        appendTo: document.body,
+        // ixtiyoriy:
+        closeOnClickModal: false,
+        closeOnPressEscape: true,
+      },
+    );
+
+    const id = row.id; // yoki row._id / row.uuid
     await api.delete(`/user/${id}`);
     ElMessage.success("User deleted successfully.");
     fetchUsers();
-  } catch (error) {
+  } catch (err: any) {
+    // cancel bo‘lsa shu yerga tushadi (xato deb ko‘rsatmaymiz)
+    if (err === "cancel" || err === "close") return;
     ElMessage.error("Failed to delete user.");
   }
 };

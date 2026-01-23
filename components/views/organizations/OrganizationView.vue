@@ -1,10 +1,12 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+  <div
+    class="h-[calc(100vh-164px)] overflow-hidden bg-gray-50 dark:bg-gray-900 flex flex-col"
+  >
     <!-- Sticky Header -->
     <div
-      class="sticky top-0 z-10 border-b border-gray-200/60 dark:border-gray-700/60 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur"
+      class="sticky top-0 z-20 border-b border-gray-200/60 dark:border-gray-700/60 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur"
     >
-      <div class="flex flex-col gap-3 p-6">
+      <div class="p-6 flex flex-col gap-4">
         <div class="flex items-start justify-between gap-4">
           <div>
             <h1
@@ -13,7 +15,7 @@
               Organizations
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Tashkilotlar ro‘yxati, parent bog‘lanishlar, qidiruv va amallar.
+              Tashkilotlar ro'yxati, parent bog'lanishlar, qidiruv va amallar.
             </p>
           </div>
 
@@ -23,7 +25,7 @@
             @click="openFormDialog()"
             class="!rounded-xl !px-5 !py-2 shadow-md"
           >
-            Yangi qo‘shish
+            Yangi qo'shish
           </el-button>
         </div>
 
@@ -34,20 +36,24 @@
       </div>
     </div>
 
-    <!-- Content -->
-    <div class="p-6 pt-4">
-      <OrganizationList
-        :organizations="organizations"
-        :loading="loading"
-        :total="totalRecords"
-        :currentPage="params.page"
-        :pageSize="params.size"
-        @view="handleView"
-        @edit="handleEdit"
-        @delete="handleDelete"
-        @page-change="handlePageChange"
-        @size-change="handleSizeChange"
-      />
+    <!-- ❗️Content card - flex-1 va overflow-hidden -->
+    <div class="flex-1 min-h-0 p-6 pt-4 overflow-hidden">
+      <div
+        class="h-full bg-white dark:bg-[#1e222b] rounded-2xl shadow-sm overflow-hidden border border-gray-100 dark:border-gray-700"
+      >
+        <OrganizationList
+          :organizations="organizations"
+          :loading="loading"
+          :total="totalRecords"
+          :currentPage="params.page"
+          :pageSize="params.size"
+          @view="handleView"
+          @edit="handleEdit"
+          @delete="handleDelete"
+          @page-change="handlePageChange"
+          @size-change="handleSizeChange"
+        />
+      </div>
 
       <OrganizationForm
         v-model:open="formDialog"
@@ -65,6 +71,7 @@ import { ref, reactive, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 import { ElMessage, ElMessageBox } from "element-plus";
+
 import OrganizationList from "./OrganizationList.vue";
 import OrganizationForm from "./OrganizationForm.vue";
 import OrganizationFilter from "./OrganizationFilter.vue";
@@ -98,8 +105,6 @@ const fetchOrganizations = async () => {
     const totalPage = data?.data?.totalPage ?? 1;
 
     organizations.value = list;
-
-    // Total records backend qaytarmasa projects’dagi usul:
     totalRecords.value = totalPage * params.size;
   } catch (error) {
     ElMessage.error("Ma'lumotlarni yuklashda xatolik");
@@ -126,23 +131,26 @@ const handleEdit = (row: any) => {
   formDialog.value = true;
 };
 
-const handleDelete = (id: number) => {
-  ElMessageBox.confirm("Haqiqatdan ham o'chirmoqchimisiz?", "Ogohlantirish", {
-    confirmButtonText: "Ha",
-    cancelButtonText: "Yo'q",
-    type: "warning",
-  }).then(async () => {
-    try {
-      await api.delete(`/organizations/${id}`);
-      ElMessage.success("O'chirildi");
-      fetchOrganizations();
-    } catch (error) {
-      ElMessage.error("O'chirishda xatolik");
-    }
-  });
+const handleDelete = async (id: number) => {
+  try {
+    await ElMessageBox.confirm(
+      "Haqiqatdan ham o'chirmoqchimisiz?",
+      "Ogohlantirish",
+      {
+        confirmButtonText: "Ha",
+        cancelButtonText: "Yo'q",
+        type: "warning",
+      },
+    );
+
+    await api.delete(`/organizations/${id}`);
+    ElMessage.success("O'chirildi");
+    fetchOrganizations();
+  } catch {
+    // cancel
+  }
 };
 
-// Pagination handlers
 const handlePageChange = (page: number) => {
   params.page = page;
   fetchOrganizations();
