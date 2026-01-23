@@ -133,6 +133,7 @@ const pageSizeModel = computed({
                   <el-icon :size="16"><Edit /></el-icon>
                 </button>
               </el-tooltip>
+              
 
               <!-- DELETE -->
               <el-tooltip content="O‘chirish" placement="top">
