@@ -1,24 +1,47 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-sm mb-4">
-    <div class="flex gap-4 items-center">
+  <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-4">
+    <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
       <el-input
         v-model="searchModel"
-        placeholder="Qidirish (Name)"
+        placeholder="Tashkilot nomi bo‘yicha qidirish..."
         clearable
         @clear="onSearch"
         @keyup.enter="onSearch"
-        class="flex-1 max-w-md"
+        class="md:flex-1"
+        size="large"
       >
         <template #prefix>
           <el-icon><Search /></el-icon>
         </template>
       </el-input>
 
-      <el-button type="primary" :icon="Search" @click="onSearch">
-        Qidirish
-      </el-button>
+      <div class="flex items-center gap-2">
+        <el-button
+          type="primary"
+          :icon="Search"
+          size="large"
+          @click="onSearch"
+          class="!rounded-xl"
+        >
+          Qidirish
+        </el-button>
 
-      <el-button v-if="searchModel" @click="clearSearch"> Tozalash </el-button>
+        <el-button
+          v-if="searchModel"
+          size="large"
+          class="!rounded-xl"
+          @click="clearSearch"
+        >
+          Tozalash
+        </el-button>
+      </div>
+    </div>
+
+    <div
+      v-if="searchModel"
+      class="text-xs mt-2 text-gray-500 dark:text-gray-400"
+    >
+      Natijalar: “{{ searchModel }}” bo‘yicha filtrlanadi
     </div>
   </div>
 </template>

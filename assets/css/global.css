@@ -1,17 +1,24 @@
+@import "element-plus/theme-chalk/dark/css-vars.css";
 @import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
 
-/* here will be global styles */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-  background-color: #fff;
+  @apply bg-white dark:bg-gray-900;
   font-family: "Comfortaa", sans-serif;
 }
 
 .el-dialog {
-  @apply !my-10 !overflow-y-auto;
+  @apply !my-10;
+}
+
+/* Element Plus: Input vars (dark) */
+html.dark {
+  --el-input-bg-color: #1f2937;
+  --el-input-border-color: #374151;
+  --el-input-text-color: #e5e7eb;
 }
 
 /* Element Plus Table Customization */
@@ -22,31 +29,10 @@ body {
   overflow: hidden;
 }
 
-html.dark {
-  /* Inputning asosiy fon rangi o'zgaruvchisi */
-  --el-input-bg-color: #2b2b2b;
-
-  /* Border rangi */
-  --el-input-border-color: #454545;
-
-  /* Matn rangi */
-  --el-input-text-color: #cfd3dc;
-}
-
-.dark .el-table {
+html.dark .el-table {
   --el-table-header-bg-color: #0f172a;
-  --el-table-bg-color: #1e293b;
-  --el-table-tr-bg-color: #1e293b;
   --el-table-row-hover-bg-color: #334155;
   --el-table-border-color: #334155;
-}
-
-/* Ensure Element Plus input inner uses the CSS variables when dark mode is active.
-   This targets the actual input element that shows the background. */
-.dark .el-input__inner {
-  --el-input-bg-color: #000;
-  color: var(--el-input-text-color, #111827) !important;
-  border-color: var(--el-input-border-color, #d1d5db) !important;
 }
 
 .el-table th.el-table__cell {

@@ -57,12 +57,21 @@
 
         <div class="grid grid-cols-1 gap-4 mt-4 border-t pt-4">
           <el-form-item label="Parent Organization" prop="parentId">
-            <el-input-number
+            <el-select
               v-model="form.parentId"
-              :min="0"
-              class="!w-full"
-              placeholder="Parent ID tanlang"
-            />
+              placeholder="Parent organization tanlang"
+              clearable
+              filterable
+              class="w-full"
+              :disabled="isViewMode"
+            >
+              <el-option
+                v-for="org in parentOptions"
+                :key="org.id"
+                :value="org.id"
+                :label="useGetTranslation(org.name)"
+              />
+            </el-select>
           </el-form-item>
         </div>
       </el-form>
@@ -96,6 +105,7 @@ const props = defineProps<{
   open: boolean;
   isViewMode?: boolean;
   editData?: any;
+  organizations: any[];
 }>();
 
 const emit = defineEmits(["update:open", "save"]);
@@ -106,16 +116,17 @@ const activeTab = ref("uz");
 
 const form = reactive({
   name: { uz: "", en: "", ru: "", krill: "" },
-  parentId: 0,
+  parentId: null as number | null,
+});
+
+const parentOptions = computed(() => {
+  const selfId = props.editData?.id;
+  return (props.organizations || []).filter((o: any) => o.id !== selfId);
 });
 
 const rules = {
-  "name.uz": [
-    { required: true, message: "Nomini kiritish shart", trigger: "blur" },
-  ],
-  "name.en": [
-    { required: true, message: "English name required", trigger: "blur" },
-  ],
+  "name.uz": [{ required: true, trigger: "blur" }],
+  "name.en": [{ required: true, trigger: "blur" }],
 };
 
 const dialogVisible = computed({
@@ -128,12 +139,11 @@ watch(
   (isOpen) => {
     if (isOpen && props.editData) {
       Object.assign(form.name, props.editData.name);
-      form.parentId = props.editData.parentId || 0;
+      form.parentId = props.editData.parentId || null;
     } else if (isOpen) {
       form.name = { uz: "", en: "", ru: "", krill: "" };
-      form.parentId = 0;
+      form.parentId = null;
     }
-    activeTab.value = "uz"; // Har safar ochilganda birinchi tabga qaytish
   },
 );
 
@@ -142,11 +152,16 @@ const onSubmit = async () => {
   await formRef.value.validate(async (valid: boolean) => {
     if (!valid) return;
     loading.value = true;
+    const payload = {
+      name: form.name,
+      parentId: form.parentId ?? 0,
+    };
+
     try {
       if (props.editData?.id) {
-        await api.put(`/organizations/${props.editData.id}`, form);
+        await api.put(`/organizations/${props.editData.id}`, payload);
       } else {
-        await api.post("/organizations", form);
+        await api.post("/organizations", payload);
       }
       ElMessage.success("Muvaffaqiyatli saqlandi");
       emit("save");

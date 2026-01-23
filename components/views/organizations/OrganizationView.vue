@@ -1,40 +1,62 @@
 <template>
-  <div class="flex flex-col gap-6 p-6 bg-gray-50 dark:bg-gray-900 min-h-screen">
-    <div class="flex justify-between items-center">
-      <h1
-        class="text-2xl font-extrabold text-gray-800 dark:text-white tracking-tight"
-      >
-        Organizations
-      </h1>
-      <el-button
-        type="primary"
-        :icon="Plus"
-        @click="openFormDialog()"
-        class="!rounded-lg !px-6 shadow-md"
-      >
-        Yangi qo'shish
-      </el-button>
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <!-- Sticky Header -->
+    <div
+      class="sticky top-0 z-10 border-b border-gray-200/60 dark:border-gray-700/60 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur"
+    >
+      <div class="flex flex-col gap-3 p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <h1
+              class="text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight"
+            >
+              Organizations
+            </h1>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              Tashkilotlar ro‘yxati, parent bog‘lanishlar, qidiruv va amallar.
+            </p>
+          </div>
+
+          <el-button
+            type="primary"
+            :icon="Plus"
+            @click="openFormDialog()"
+            class="!rounded-xl !px-5 !py-2 shadow-md"
+          >
+            Yangi qo‘shish
+          </el-button>
+        </div>
+
+        <OrganizationFilter
+          v-model:search="params.search"
+          @search="handleSearch"
+        />
+      </div>
     </div>
 
-    <OrganizationFilter
-      v-model:search="filterParams.search"
-      @search="fetchOrganizations"
-    />
+    <!-- Content -->
+    <div class="p-6 pt-4">
+      <OrganizationList
+        :organizations="organizations"
+        :loading="loading"
+        :total="totalRecords"
+        :currentPage="params.page"
+        :pageSize="params.size"
+        @view="handleView"
+        @edit="handleEdit"
+        @delete="handleDelete"
+        @page-change="handlePageChange"
+        @size-change="handleSizeChange"
+      />
 
-    <OrganizationList
-      :organizations="organizations"
-      :loading="loading"
-      @view="handleView"
-      @edit="handleEdit"
-      @delete="handleDelete"
-    />
-
-    <OrganizationForm
-      v-model:open="formDialog"
-      :isViewMode="isViewMode"
-      :editData="editData"
-      @save="fetchOrganizations"
-    />
+      <OrganizationForm
+        v-model:open="formDialog"
+        :isViewMode="isViewMode"
+        :editData="editData"
+        :organizations="organizations"
+        @save="fetchOrganizations"
+      />
+    </div>
   </div>
 </template>
 
@@ -47,21 +69,38 @@ import OrganizationList from "./OrganizationList.vue";
 import OrganizationForm from "./OrganizationForm.vue";
 import OrganizationFilter from "./OrganizationFilter.vue";
 
-const organizations = ref([]);
+const organizations = ref<any[]>([]);
 const loading = ref(false);
 const formDialog = ref(false);
 const isViewMode = ref(false);
-const editData = ref(null);
+const editData = ref<any>(null);
 
-const filterParams = reactive({ search: "" });
+const totalRecords = ref(0);
+
+const params = reactive({
+  page: 1,
+  size: 10,
+  search: "",
+});
 
 const fetchOrganizations = async () => {
   loading.value = true;
   try {
     const { data } = await api.get("/organizations", {
-      params: { search: filterParams.search },
+      params: {
+        page: params.page,
+        size: params.size,
+        search: params.search || undefined,
+      },
     });
-    organizations.value = data.data || [];
+
+    const list = data?.data?.data ?? data?.data ?? [];
+    const totalPage = data?.data?.totalPage ?? 1;
+
+    organizations.value = list;
+
+    // Total records backend qaytarmasa projects’dagi usul:
+    totalRecords.value = totalPage * params.size;
   } catch (error) {
     ElMessage.error("Ma'lumotlarni yuklashda xatolik");
   } finally {
@@ -77,13 +116,13 @@ const openFormDialog = () => {
 
 const handleView = (row: any) => {
   isViewMode.value = true;
-  editData.value = row;
+  editData.value = { ...row };
   formDialog.value = true;
 };
 
 const handleEdit = (row: any) => {
   isViewMode.value = false;
-  editData.value = row;
+  editData.value = { ...row };
   formDialog.value = true;
 };
 
@@ -101,6 +140,23 @@ const handleDelete = (id: number) => {
       ElMessage.error("O'chirishda xatolik");
     }
   });
+};
+
+// Pagination handlers
+const handlePageChange = (page: number) => {
+  params.page = page;
+  fetchOrganizations();
+};
+
+const handleSizeChange = (size: number) => {
+  params.size = size;
+  params.page = 1;
+  fetchOrganizations();
+};
+
+const handleSearch = () => {
+  params.page = 1;
+  fetchOrganizations();
 };
 
 onMounted(fetchOrganizations);

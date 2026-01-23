@@ -18,6 +18,7 @@
     "ok": "OK",
     "cancel": "Cancel",
     "save": "Save",
+    "update": "Update",
     "add": "Add",
     "search": "Search",
     "create": "Create"
@@ -36,24 +37,31 @@
     "user_list": "User List",
     "no_users_found": "No users found",
     "createUser": "Create User",
-    "createDescription": "Fill in the details below to create a new user.",
+    "editUser": "Edit User",
+    "createDescription": "Fill in the details below to create a new user",
+    "editDescription": "Update user information",
     "create": "Create",
     "created": "User created successfully",
     "selectImage": "Select Image",
+    "changeImage": "Change Image",
     "fullName": "Full Name",
-    "enterFullName": "Enter full name",
+    "fullNamePlaceholder": "Enter your name",
     "username": "Username",
-    "enterUsername": "Enter username",
+    "usernamePlaceholder": "Enter username",
     "password": "Password",
-    "enterPassword": "Enter password",
+    "passwordPlaceholder": "Enter password",
+    "passwordOptional": "Leave blank to keep current password",
     "role": "Role",
-    "selectRole": "Select role",
-    "edit": "Edit User"
+    "selectRole": "Select role"
   },
   "messages": {
-    "userCreated": "The user has been created successfully.",
-    "userUpdated": "The user has been updated successfully.",
-    "imageUploaded": "The image has been uploaded successfully."
+    "required": "This field is required",
+    "fileTooLarge": "File size must not exceed 5MB",
+    "userCreated": "User has been created successfully",
+    "userUpdated": "User has been updated successfully",
+    "imageUploaded": "Image has been uploaded successfully",
+    "createSuccess": "Successfully created",
+    "updateSuccess": "Successfully updated"
   },
   "employee": {
     "add": "Add Employee",
@@ -67,7 +75,7 @@
     "employee_list": "Employee List",
     "no_employees_found": "No employees found",
     "createEmployee": "Create Employee",
-    "createDescription": "Fill in the details below to create a new employee.",
+    "createDescription": "Fill in the details below to create a new employee",
     "create": "Create",
     "created": "Employee created successfully",
     "fullName": "Full Name",
@@ -76,8 +84,6 @@
     "enterPosition": "Enter position",
     "department": "Department",
     "enterDepartment": "Enter department",
-    "edit": "Edit Employee",
-    "selectImage": "Select Image",
-    "createEmployee": "Create Employee"
+    "selectImage": "Select Image"
   }
 }

@@ -1,11 +1,13 @@
 {
   "common": {
-    "search": "",
+    "search": "Qidirish",
     "create": "Yaratish",
     "add": "Qo'shish",
     "cancel": "Bekor qilish",
     "ok": "OK",
-    "save": "Saqlash"
+    "save": "Saqlash",
+    "update": "Yangilash",
+    "clear": "Tozalash"
   },
   "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "enter_your_password_here": "Parolingizni shu yerga kiriting",
@@ -22,13 +24,6 @@
   },
   "password": "Parol",
   "test": "test uz",
-  "common": {
-    "add": "Qo'shish",
-    "cancel": "Bekor qilish",
-    "ok": "OK",
-    "save": "Saqlash",
-    "search": "Qidirish"
-  },
   "validation": {
     "email": "Iltimos, to'g'ri elektron pochtaningizni kiriting",
     "required": "Bu maydon majburiy",
@@ -43,24 +38,31 @@
     "user_list": "Foydalanuvchilar ro'yxati",
     "no_users_found": "Foydalanuvchilar topilmadi",
     "createUser": "Foydalanuvchi yaratish",
-    "createDescription": "Yangi foydalanuvchini yaratish uchun quyidagi ma'lumotlarni to'ldiring.",
+    "editUser": "Foydalanuvchini tahrirlash",
+    "createDescription": "Yangi foydalanuvchini yaratish uchun quyidagi ma'lumotlarni to'ldiring",
+    "editDescription": "Foydalanuvchi ma'lumotlarini o'zgartirish",
     "create": "Yaratish",
     "created": "Foydalanuvchi muvaffaqiyatli yaratildi",
-    "selectImage": "Rasmni tanlang",
+    "selectImage": "Rasm tanlang",
+    "changeImage": "Rasmni o'zgartirish",
     "fullName": "To'liq ism",
-    "enterFullName": "To'liq ismni kiriting",
+    "fullNamePlaceholder": "Ismingizni kiriting",
     "username": "Foydalanuvchi nomi",
-    "enterUsername": "Foydalanuvchi nomini kiriting",
+    "usernamePlaceholder": "Username kiriting",
     "password": "Parol",
-    "enterPassword": "Parolni kiriting",
+    "passwordPlaceholder": "Parol kiriting",
+    "passwordOptional": "Parolni o'zgartirmaslik uchun bo'sh qoldiring",
     "role": "Rol",
-    "selectRole": "Rolni tanlang",
-    "edit": "Tahrirlash"
+    "selectRole": "Rolni tanlang"
   } ,
   "messages": {
-    "userCreated": "Foydalanuvchi muvaffaqiyatli yaratildi.",
-    "userUpdated": "Foydalanuvchi muvaffaqiyatli yangilandi.",
-    "imageUploaded": "Rasm muvaffaqiyatli yuklandi."
+    "required": "Bu maydon majburiy",
+    "fileTooLarge": "Fayl hajmi 5MB dan oshmasligi kerak",
+    "userCreated": "Foydalanuvchi muvaffaqiyatli yaratildi",
+    "userUpdated": "Foydalanuvchi muvaffaqiyatli yangilandi",
+    "imageUploaded": "Rasm muvaffaqiyatli yuklandi",
+    "createSuccess": "Muvaffaqiyatli yaratildi",
+    "updateSuccess": "Muvaffaqiyatli yangilandi"
   },
   "employee": {
     "add": "Xodim qo'shish",
