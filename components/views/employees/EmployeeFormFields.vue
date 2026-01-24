@@ -65,14 +65,14 @@
     </el-form-item>
 
     <!-- Manager ID -->
-    <el-form-item label="Manager ID" prop="managerId" class="col-span-2">
+    <!-- <el-form-item label="Manager ID" prop="managerId" class="col-span-2">
       <el-input-number
         v-model="modelValue.managerId"
         :min="1"
         placeholder="Manager ID"
         class="w-full"
       />
-    </el-form-item>
+    </el-form-item> -->
   </div>
 </template>
 

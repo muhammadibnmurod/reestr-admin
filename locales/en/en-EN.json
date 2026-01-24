@@ -21,7 +21,8 @@
     "update": "Update",
     "add": "Add",
     "search": "Search",
-    "create": "Create"
+    "create": "Create",
+    "noData": "No data available"
   },
   "validation": {
     "required": "This field is required",

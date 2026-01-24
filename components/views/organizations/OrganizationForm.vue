@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    width="600px"
+    width="640px"
     align-center
     append-to-body
     destroy-on-close
@@ -9,33 +9,23 @@
     :lock-scroll="true"
     class="modern-org-dialog"
   >
-    <!-- ✅ HEADER (QOTADI) -->
+    <!-- ✅ HEADER (qotadi) -->
     <template #header>
       <div class="dlg-header">
         <div class="dlg-icon">
           <el-icon :size="20" class="text-white">
-            <component :is="isViewMode ? View : editData?.id ? Edit : Plus" />
+            <component :is="headerIcon" />
           </el-icon>
         </div>
 
-        <div class="flex-1">
-          <h3 class="text-xl font-bold text-gray-900 dark:text-white">
-            {{
-              isViewMode
-                ? "Organization ma'lumotlari"
-                : editData?.id
-                  ? "Tahrirlash"
-                  : "Yangi Organization"
-            }}
+        <div class="flex-1 pr-10">
+          <h3
+            class="text-xl font-bold text-gray-900 dark:text-white leading-tight"
+          >
+            {{ headerTitle }}
           </h3>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            {{
-              isViewMode
-                ? "Tashkilot haqida ma'lumot"
-                : editData?.id
-                  ? "Tashkilotni tahrirlash"
-                  : "Yangi tashkilot qo‘shish"
-            }}
+            {{ headerSubtitle }}
           </p>
         </div>
       </div>
@@ -48,9 +38,10 @@
         :model="form"
         :rules="rules"
         label-position="top"
+        size="large"
         :disabled="isViewMode"
       >
-        <el-tabs v-model="activeTab" class="mb-4">
+        <el-tabs v-model="activeTab" class="org-tabs">
           <el-tab-pane label="O'zbekcha" name="uz">
             <el-form-item label="Name (UZ)" prop="name.uz">
               <el-input
@@ -86,7 +77,7 @@
         </el-tabs>
 
         <div
-          class="grid grid-cols-1 gap-4 mt-4 border-t border-gray-200/70 dark:border-gray-700/70 pt-4"
+          class="pt-5 mt-4 border-t border-gray-200/70 dark:border-gray-700/70"
         >
           <el-form-item label="Parent Organization" prop="parentId">
             <el-select
@@ -109,10 +100,10 @@
       </el-form>
     </div>
 
-    <!-- ✅ FOOTER (QOTADI) -->
+    <!-- ✅ FOOTER (qotadi) -->
     <template #footer>
       <div class="dlg-footer">
-        <el-button size="large" @click="onCancel" class="!px-6">
+        <el-button size="large" class="!px-6 !rounded-xl" @click="onCancel">
           {{ isViewMode ? "Yopish" : "Bekor qilish" }}
         </el-button>
 
@@ -120,9 +111,9 @@
           v-if="!isViewMode"
           type="primary"
           size="large"
+          class="!px-8 !rounded-xl"
           :loading="loading"
           @click="onSubmit"
-          class="!px-8"
         >
           Saqlash
         </el-button>
@@ -132,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive, computed } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import api from "@/utils/axios";
 import { ElMessage } from "element-plus";
 import { Plus, Edit, View } from "@element-plus/icons-vue";
@@ -158,6 +149,32 @@ const form = reactive({
   parentId: null as number | null,
 });
 
+const dialogVisible = computed({
+  get: () => props.open,
+  set: (v) => emit("update:open", v),
+});
+
+const isEdit = computed(() => !!props.editData?.id);
+const isViewMode = computed(() => !!props.isViewMode);
+
+const headerIcon = computed(() =>
+  isViewMode.value ? View : isEdit.value ? Edit : Plus,
+);
+const headerTitle = computed(() =>
+  isViewMode.value
+    ? "Organization ma'lumotlari"
+    : isEdit.value
+      ? "Tahrirlash"
+      : "Yangi Organization",
+);
+const headerSubtitle = computed(() =>
+  isViewMode.value
+    ? "Tashkilot haqida ma'lumot"
+    : isEdit.value
+      ? "Tashkilotni tahrirlash"
+      : "Yangi tashkilot qo‘shish",
+);
+
 const parentOptions = computed(() => {
   const selfId = props.editData?.id;
   return (props.organizations || []).filter((o: any) => o.id !== selfId);
@@ -170,11 +187,6 @@ const rules = {
   "name.krill": [{ required: true, message: "Majburiy", trigger: "blur" }],
 };
 
-const dialogVisible = computed({
-  get: () => props.open,
-  set: (val) => emit("update:open", val),
-});
-
 const resetForm = () => {
   Object.assign(form.name, { uz: "", en: "", ru: "", krill: "" });
   form.parentId = null;
@@ -185,7 +197,10 @@ const resetForm = () => {
 watch(
   () => props.open,
   (isOpen) => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      resetForm();
+      return;
+    }
 
     if (props.editData?.id) {
       Object.assign(form.name, {
@@ -199,6 +214,7 @@ watch(
       resetForm();
     }
   },
+  { immediate: true },
 );
 
 const onSubmit = async () => {
@@ -213,37 +229,38 @@ const onSubmit = async () => {
       parentId: form.parentId ?? 0,
     };
 
-    if (props.editData?.id) {
+    if (props.editData?.id)
       await api.put(`/organizations/${props.editData.id}`, payload);
-    } else {
-      await api.post("/organizations", payload);
-    }
+    else await api.post("/organizations", payload);
 
     ElMessage.success("Muvaffaqiyatli saqlandi");
     emit("save");
-    dialogVisible.value = false;
+    emit("update:open", false);
     resetForm();
-  } catch (error: any) {
-    ElMessage.error(error.response?.data?.message || "Xatolik yuz berdi");
+  } catch (e: any) {
+    ElMessage.error(e?.response?.data?.message || "Xatolik yuz berdi");
   } finally {
     loading.value = false;
   }
 };
 
 const onCancel = () => {
-  dialogVisible.value = false;
+  emit("update:open", false);
   resetForm();
 };
 </script>
 
 <style scoped>
-/* ✅ Dialog flex layout: modal scroll bo‘lmaydi */
 .modern-org-dialog :deep(.el-dialog) {
   @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden;
-  max-height: 65vh;
+  height: 60vh; 
+  max-height: 60vh;
   display: flex;
   flex-direction: column;
-  margin: auto !important;
+}
+.modern-org-dialog :deep(.el-dialog__headerbtn) {
+  top: 17px;
+  right: 16px;
 }
 
 .modern-org-dialog :deep(.el-dialog__header),
@@ -256,22 +273,20 @@ const onCancel = () => {
   @apply !p-0;
   flex: 1;
   min-height: 0;
-  overflow: hidden; /* ✅ modal scroll OFF */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* Header */
 .dlg-header {
   @apply flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700
          bg-white dark:bg-gray-900;
 }
 .dlg-icon {
-  @apply w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600
+  @apply w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600
          flex items-center justify-center shadow-lg;
 }
 
-/* ✅ only body scroll */
 .dlg-body-scroll {
   @apply px-6 py-6;
   flex: 1;
@@ -280,14 +295,16 @@ const onCancel = () => {
   overflow-x: hidden;
 }
 
-/* Footer */
+.org-tabs :deep(.el-tabs__header) {
+  @apply mb-4;
+}
+
 .dlg-footer {
-  @apply flex items-center justify-end gap-3 px-6 py-4
+  @apply flex items-center justify-end gap-3 px-6 py-6
          border-t border-gray-200 dark:border-gray-700
          bg-gray-50 dark:bg-gray-800/50;
 }
 
-/* input/select styling (users bilan mos) */
 :deep(.el-form-item__label) {
   @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
 }

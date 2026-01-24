@@ -1,12 +1,19 @@
 <template>
-  <div class="flex flex-col gap-6 h-full p-6 bg-gray-50 dark:bg-gray-900">
+  <div
+    class="flex flex-col gap-6 h-calc(120vh) overflow-hidden p-6 bg-gray-50 dark:bg-gray-900"
+  >
     <!-- Header + Create button -->
     <div class="flex justify-between items-center pb-4">
       <h1 class="text-black dark:text-white text-3xl font-inter font-bold">
         Loyihalar
       </h1>
 
-      <el-button type="primary" class="flex items-center text-center !p-6" :icon="ElIconPlus" @click="createProject">
+      <el-button
+        type="primary"
+        class="flex items-center text-center !p-6"
+        :icon="ElIconPlus"
+        @click="createProject"
+      >
         <p class="w-full flex items-center text-center">Yangi loyiha</p>
       </el-button>
     </div>
@@ -37,8 +44,8 @@ import api from "@/utils/axios";
 import { useRouter } from "vue-router";
 import { Plus as ElIconPlus } from "@element-plus/icons-vue";
 
-import ProjectsFilter from "@/components/views/projects/ProjectsFilter.vue";
-import ProjectsList from "@/components/views/projects/ProjectsList.vue";
+import ProjectsFilter from "~/components/views/projects/list/ProjectsFilter.vue";
+import ProjectsList from "~/components/views/projects/list/ProjectsList.vue";
 
 const router = useRouter();
 
@@ -75,11 +82,11 @@ const deleteProject = async (project: any) => {
 };
 
 const viewProject = (project: any) => {
-  router.push(`/projects/${project.id}?mode=view`);
+  router.push(`/projects/${project.id}`); // view
 };
 
 const editProject = (project: any) => {
-  router.push(`/projects/${project.id}?mode=edit`);
+  router.push(`/projects/${project.id}/edit`); // edit (alohida route)
 };
 
 const createProject = () => {

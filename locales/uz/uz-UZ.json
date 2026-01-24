@@ -7,7 +7,8 @@
     "ok": "OK",
     "save": "Saqlash",
     "update": "Yangilash",
-    "clear": "Tozalash"
+    "clear": "Tozalash",
+    "noData": "Mavjud ma'lumotlar yo'q"
   },
   "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "enter_your_password_here": "Parolingizni shu yerga kiriting",

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="h-[calc(100vh-164px)] overflow-hidden bg-gray-50 dark:bg-gray-900 flex flex-col"
+    class="h-[calc(100vh-130px)] overflow-hidden bg-gray-50 dark:bg-gray-900 flex flex-col"
   >
     <!-- Sticky Header -->
     <div

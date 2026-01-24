@@ -68,7 +68,7 @@
             </div>
           </template>
         </el-table-column>
-
+<!-- 
         <el-table-column label="Manager ID" width="120" align="center">
           <template #default="{ row }">
             <span
@@ -80,7 +80,7 @@
             </span>
             <span v-else class="text-gray-400">-</span>
           </template>
-        </el-table-column>
+        </el-table-column> -->
 
         <el-table-column label="Amallar" width="170" fixed="right" align="center">
           <template #default="{ row }">
