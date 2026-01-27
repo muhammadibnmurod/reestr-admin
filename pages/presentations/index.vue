@@ -98,7 +98,7 @@ const goToCreate = () => {
 
 const goToEdit = (presentation: Presentation) => {
   router.push({ 
-    name: 'presentations-edit', 
+    name: 'presentations-edit-id', 
     params: { id: presentation.id } 
   });
 };

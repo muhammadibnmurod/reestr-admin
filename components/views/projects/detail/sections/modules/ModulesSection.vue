@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+    class="bg-white h-screen overflow-hidden dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700"
   >
     <!-- header -->
     <div class="p-6 border-b border-gray-200/60 dark:border-gray-700/60">

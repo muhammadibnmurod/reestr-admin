@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col gap-6 h-calc(120vh) overflow-hidden p-6 bg-gray-50 dark:bg-gray-900"
+    class="flex flex-col gap-6 h-screen overflow-hidden p-6 bg-gray-50 dark:bg-gray-900"
   >
     <!-- Header + Create button -->
     <div class="flex justify-between items-center pb-4">

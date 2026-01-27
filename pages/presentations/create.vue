@@ -178,7 +178,7 @@ const onSubmit = async () => {
     try {
       const payload = {
         ...form.value,
-        features: form.value.features.map((feature, index) => ({
+        features: form.value.features.map((feature) => ({
           titleUz: feature.titleUz,
           titleRu: feature.titleRu,
           titleEn: feature.titleEn,
@@ -188,7 +188,6 @@ const onSubmit = async () => {
           descriptionEn: feature.descriptionEn,
           descriptionKiril: feature.descriptionKiril,
           icon: feature.icon,
-          order: index + 1,
         })),
       };
 

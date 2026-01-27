@@ -1,6 +1,6 @@
 <template>
   <div
-     class=" h-[calc(100vh-164px)] overflow-hidden flex flex-col gap-6 p-6  !pb-12 bg-gray-50 dark:bg-gray-900 overflow-x-hidden"
+    class="h-[calc(100vh-164px)] overflow-hidden flex flex-col gap-6 p-6 !pb-12 bg-gray-50 dark:bg-gray-900 overflow-x-hidden"
   >
     <!-- FORM DIALOG -->
     <PresentationForm
@@ -30,23 +30,45 @@
     <!-- FILTER -->
     <PresentationsFilter
       v-model:search="filterParams.search"
-      :total-count="presentations.length"
+      :total-count="filteredPresentations.length"
+      @search="onSearch"
     />
 
-    <!-- LIST -->
-    <PresentationsList
-      :presentations="presentations"
-      :loading="loading"
-      @edit="openEditDialog"
-      @view="viewPresentation"
-      @delete="confirmDelete"
-      @order-change="handleOrderChange"
-    />
+    <!-- LIST + PAGINATION WRAP -->
+    <div class="flex-1 min-h-0 flex flex-col gap-4">
+      <!-- TABLE -->
+      <div class="flex-1 min-h-0">
+        <PresentationsList
+          :presentations="paginatedPresentations"
+          :loading="loading"
+          @edit="openEditDialog"
+          @view="viewPresentation"
+          @delete="confirmDelete"
+          @order-change="handleOrderChange"
+          class="h-full"
+        />
+      </div>
+
+      <!-- PAGINATION -->
+      <div
+        class="bg-white dark:bg-[#1e222b] rounded-2xl border border-gray-100 dark:border-gray-700 px-4 py-3 flex items-center justify-end"
+      >
+        <el-pagination
+          v-model:current-page="filterParams.currentPage"
+          v-model:page-size="filterParams.pageSize"
+          :page-sizes="[10, 20, 50, 100]"
+          :total="filteredPresentations.length"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="onSizeChange"
+          @current-change="onPageChange"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessageBox, ElNotification, ElLoading } from "element-plus";
 import api from "@/utils/axios";
@@ -77,9 +99,7 @@ const fetchPresentations = async () => {
   try {
     const res = await api.get("/presentation");
     presentations.value = res.data.data || [];
-
-    // ORDER bo‘yicha sort
-    presentations.value.sort((a, b) => a.order - b.order);
+    presentations.value.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   } catch (err: any) {
     ElNotification({
       title: "Xatolik",
@@ -96,6 +116,56 @@ const fetchPresentations = async () => {
 
 onMounted(fetchPresentations);
 
+/** ✅ SEARCH FILTER (frontend) */
+const filteredPresentations = computed(() => {
+  const q = filterParams.value.search.trim().toLowerCase();
+  if (!q) return presentations.value;
+
+  return presentations.value.filter((p) => {
+    const hay = [
+      p.titleUz,
+      p.titleEn,
+      p.titleRu,
+      p.titleKiril,
+      p.subtitleUz,
+      p.subtitleEn,
+      p.subtitleRu,
+      p.subtitleKiril,
+      p.descriptionUz,
+      p.descriptionEn,
+      p.descriptionRu,
+      p.descriptionKiril,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    return hay.includes(q);
+  });
+});
+
+/** ✅ PAGINATION (frontend) */
+const paginatedPresentations = computed(() => {
+  const page = filterParams.value.currentPage;
+  const size = filterParams.value.pageSize;
+  const start = (page - 1) * size;
+  return filteredPresentations.value.slice(start, start + size);
+});
+
+const onSearch = () => {
+  // search o'zgarsa 1-page ga qaytamiz
+  filterParams.value.currentPage = 1;
+};
+
+const onPageChange = (page: number) => {
+  filterParams.value.currentPage = page;
+};
+
+const onSizeChange = (size: number) => {
+  filterParams.value.pageSize = size;
+  filterParams.value.currentPage = 1;
+};
+
 /* ACTIONS */
 const openFormDialog = () => {
   isEditMode.value = false;
@@ -105,7 +175,7 @@ const openFormDialog = () => {
 };
 
 const openEditDialog = (row: Presentation) => {
-  router.push(`/presentations/edit/${row.id}`);
+  router.push(`/components/views/presentations/pages/${row.id}`);
 };
 
 const viewPresentation = (row: Presentation) => {
@@ -140,7 +210,14 @@ const onDelete = async (id: number) => {
       message: "Taqdimot o‘chirildi",
       type: "success",
     });
-    fetchPresentations();
+    await fetchPresentations();
+
+    // agar oxirgi page bo'shab qolsa, oldingi page ga qaytaramiz
+    const total = filteredPresentations.value.length;
+    const maxPage = Math.max(1, Math.ceil(total / filterParams.value.pageSize));
+    if (filterParams.value.currentPage > maxPage) {
+      filterParams.value.currentPage = maxPage;
+    }
   } finally {
     loader.close();
   }
@@ -161,7 +238,7 @@ const handleOrderChange = async (
       message: "Tartib saqlandi",
       type: "success",
     });
-    fetchPresentations();
+    await fetchPresentations();
   } finally {
     loader.close();
   }

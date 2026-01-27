@@ -7,7 +7,6 @@
     class="module-dialog"
     :close-on-click-modal="true"
   >
-    <!-- HEADER (qotadi) -->
     <template #header>
       <div
         class="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
@@ -261,10 +260,9 @@ const submit = async () => {
 </script>
 
 <style scoped>
-/* ✅ Eng muhim: dialogni flex column qilib, body scrollni o‘chirib qo‘yamiz */
 .module-dialog :deep(.el-dialog) {
   @apply !rounded-2xl overflow-hidden bg-white dark:bg-gray-900;
-  max-height: 85vh; /* xohlasang 80/90 */
+  max-height: 85vh; 
   display: flex;
   flex-direction: column;
   margin: auto !important;
@@ -273,19 +271,18 @@ const submit = async () => {
 .module-dialog :deep(.el-dialog__header),
 .module-dialog :deep(.el-dialog__footer) {
   @apply !p-0;
-  flex-shrink: 0; /* ✅ qotadi */
+  flex-shrink: 0;
 }
 
 .module-dialog :deep(.el-dialog__body) {
   @apply !p-0;
   flex: 1;
   min-height: 0;
-  overflow: hidden; /* ✅ modal scroll OFF */
+  overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* ✅ faqat shu joy scroll bo‘ladi */
 .dlg-body-scroll {
   @apply px-6 py-5;
   flex: 1;
@@ -294,7 +291,6 @@ const submit = async () => {
   overflow-x: hidden;
 }
 
-/* styling */
 :deep(.el-form-item__label) {
   @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
 }

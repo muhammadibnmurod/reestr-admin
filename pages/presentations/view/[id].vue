@@ -11,10 +11,10 @@
         />
         <div>
           <h1 class="text-black dark:text-white text-3xl font-inter font-bold">
-            Taqdimotni tahrirlash
+            Taqdimotni ko'rish
           </h1>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Taqdimot ma'lumotlarini o'zgartirish
+            Taqdimot ma'lumotlarini o'qish (tahrirlash mumkin emas)
           </p>
         </div>
       </div>
@@ -26,7 +26,6 @@
         <el-form
           ref="formRef"
           :model="form"
-          :rules="rules"
           label-position="top"
           size="large"
           class="modern-form"
@@ -42,6 +41,7 @@
                   v-model="form.logo"
                   :initial-preview="form.logo"
                   upload-type="logo"
+                  :disabled="true"
                 />
               </el-form-item>
               <el-form-item label="Banner rasm *" prop="image">
@@ -49,6 +49,7 @@
                   v-model="form.image"
                   :initial-preview="form.image"
                   upload-type="image"
+                  :disabled="true"
                 />
               </el-form-item>
             </div>
@@ -60,7 +61,7 @@
               Rang
             </h3>
             <el-form-item label="Rang *" prop="color">
-              <PresentationColorPicker v-model="form.color" />
+              <PresentationColorPicker v-model="form.color" :disabled="true" />
             </el-form-item>
           </div>
 
@@ -69,30 +70,29 @@
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
               Asosiy ma'lumotlar
             </h3>
-            <PresentationFormFields v-model="form" />
+            <PresentationFormFields v-model="form" :disabled="true" />
           </div>
 
           <!-- Features Section -->
           <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 mb-6">
-            <PresentationFeaturesManager v-model="form.features" />
+            <PresentationFeaturesManager v-model="form.features" :disabled="true" />
           </div>
 
           <!-- Action Buttons -->
           <div class="flex items-center justify-end gap-3 bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 sticky bottom-0">
             <el-button size="large" @click="goBack" class="px-8">
-              Bekor qilish
+              Orqaga qaytish
             </el-button>
             <el-button
               type="primary"
               size="large"
-              @click="onSubmit"
-              :loading="loading"
+              @click="goToEdit"
               class="px-8"
             >
               <template #icon>
-                <el-icon><Check /></el-icon>
+                <el-icon><Edit /></el-icon>
               </template>
-              Saqlash
+              Tahrirlash
             </el-button>
           </div>
         </el-form>
@@ -104,16 +104,15 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { ElMessage, ElNotification } from "element-plus";
+import { ElNotification } from "element-plus";
 import type { FormInstance } from "element-plus";
-import { ArrowLeft, Check } from "@element-plus/icons-vue";
+import { ArrowLeft, Edit } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 import type { PresentationFormData, Presentation } from "@/types";
 
 const router = useRouter();
 const route = useRoute();
 const formRef = ref<FormInstance>();
-const loading = ref(false);
 const pageLoading = ref(true);
 
 const form = ref<PresentationFormData>({
@@ -138,30 +137,6 @@ const form = ref<PresentationFormData>({
   logo: "",
   features: [],
 });
-
-const rules = {
-  titleUz: [
-    { required: true, message: "Sarlavha (O'zbekcha) kiritish majburiy", trigger: "blur" },
-  ],
-  subtitleUz: [
-    { required: true, message: "Qo'shimcha sarlavha kiritish majburiy", trigger: "blur" },
-  ],
-  descriptionTitleUz: [
-    { required: true, message: "Tavsif sarlavhasi kiritish majburiy", trigger: "blur" },
-  ],
-  descriptionUz: [
-    { required: true, message: "Tavsif kiritish majburiy", trigger: "blur" },
-  ],
-  color: [
-    { required: true, message: "Rang tanlash majburiy", trigger: "change" },
-  ],
-  logo: [
-    { required: true, message: "Logo yuklash majburiy", trigger: "change" },
-  ],
-  image: [
-    { required: true, message: "Banner rasm yuklash majburiy", trigger: "change" },
-  ],
-};
 
 const fetchPresentation = async () => {
   const id = route.params.id;
@@ -214,44 +189,10 @@ const goBack = () => {
   router.push({ name: 'presentations' });
 };
 
-const onSubmit = async () => {
-  if (!formRef.value) return;
-
-  await formRef.value.validate(async (valid: boolean) => {
-    if (!valid) return;
-
-    if (form.value.features.length === 0) {
-      ElMessage.warning("Kamida bitta xususiyat qo'shish kerak");
-      return;
-    }
-
-    loading.value = true;
-    try {
-      const payload = {
-        ...form.value,
-        features: form.value.features.map((feature, index) => ({
-          titleUz: feature.titleUz,
-          titleRu: feature.titleRu,
-          titleEn: feature.titleEn,
-          titleKiril: feature.titleKiril,
-          descriptionUz: feature.descriptionUz,
-          descriptionRu: feature.descriptionRu,
-          descriptionEn: feature.descriptionEn,
-          descriptionKiril: feature.descriptionKiril,
-          icon: feature.icon,
-          order: index + 1,
-        })),
-      };
-
-      const id = route.params.id;
-      await api.put(`/presentation/${id}`, payload);
-      ElMessage.success("Taqdimot muvaffaqiyatli yangilandi");
-      router.push({ name: 'presentations' });
-    } catch (error: any) {
-      ElMessage.error(error.response?.data?.message || "Xatolik yuz berdi");
-    } finally {
-      loading.value = false;
-    }
+const goToEdit = () => {
+  router.push({ 
+    name: 'presentations-edit', 
+    params: { id: route.params.id } 
   });
 };
 </script>
