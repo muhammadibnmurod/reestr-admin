@@ -1,5 +1,5 @@
 @import "element-plus/theme-chalk/dark/css-vars.css";
-@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Comfortaa:wght@300..700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,7 +7,11 @@
 
 body {
   @apply bg-white dark:bg-gray-900;
-  font-family: "Comfortaa", sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Comfortaa", "Inter", system-ui, sans-serif;
 }
 
 .el-dialog {

@@ -24,7 +24,14 @@ export default defineNuxtConfig({
     ],
     "nuxt-svgo",
     "@nuxtjs/i18n",
+    '@nuxt/fonts',
   ],
+
+  fonts: {
+    families: [
+      { name: "Inter", provider: "google" },    ]
+  },
+
   elementPlus: {
     /** Options */
   },

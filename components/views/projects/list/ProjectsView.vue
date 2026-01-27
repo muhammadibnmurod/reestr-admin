@@ -82,12 +82,14 @@ const deleteProject = async (project: any) => {
 };
 
 const viewProject = (project: any) => {
-  router.push(`/projects/${project.id}`); // view
+  router.push(`/projects/${project.id}`);
 };
 
+
 const editProject = (project: any) => {
-  router.push(`/projects/${project.id}/edit`); // edit (alohida route)
+  router.push(`/projects/${project.id}/edit`);
 };
+
 
 const createProject = () => {
   router.push("/projects/create");

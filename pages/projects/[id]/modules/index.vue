@@ -63,22 +63,21 @@ import { ref, computed, onMounted } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { Plus } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
-const route = useRoute();
-const router = useRouter();
-
-import ModulesFilter from "./ModulesFilter.vue";
-import ModulesList from "./ModulesList.vue";
-import ModuleForm from "./ModuleForm.vue";
-import SubmodulesSection from "./submodules/SubmodulesSection.vue";
+import ModulesFilter from "@/components/views/projects/detail/sections/modules/ModulesFilter.vue";
+import ModulesList from "@/components/views/projects/detail/sections/modules/ModulesList.vue";
+import ModuleForm from "@/components/views/projects/detail/sections/modules/ModuleForm.vue";
 
 type ModuleItem = any;
 
 const props = defineProps<{
-  projectId: number;
   readonly?: boolean;
 }>();
+
+const route = useRoute();
+const router = useRouter();
+const projectId = computed(() => Number(route.params.id));
 
 const loading = ref(false);
 const modules = ref<ModuleItem[]>([]);
@@ -87,15 +86,10 @@ const search = ref("");
 const formOpen = ref(false);
 const editData = ref<ModuleItem | null>(null);
 
-/** Submodules drawer */
-const subDrawerOpen = ref(false);
-const selectedModule = ref<ModuleItem | null>(null);
-const drawerSize = computed(() => "min(720px, 96vw)");
-
 const fetchModules = async () => {
   loading.value = true;
   try {
-    const res = await api.get(`/module/project/${props.projectId}`);
+    const res = await api.get(`/module/project/${projectId.value}`);
     modules.value = res.data?.data ?? res.data ?? [];
     modules.value = [...modules.value].sort(
       (a, b) => (a.order ?? 0) - (b.order ?? 0)
@@ -155,17 +149,7 @@ const confirmDelete = (row: ModuleItem) => {
   });
 };
 
-
 const openSubmodules = (row: any) => {
-  router.push(`/projects/${props.projectId}/modules/${row.id}`);
+  router.push(`/projects/${projectId.value}/modules/${row.id}`);
 };
 </script>
-
-<style scoped>
-/* drawer */
-.submodules-drawer :deep(.el-drawer__body) {
-  padding: 16px;
-  height: 100%;
-  overflow: hidden;
-}
-</style>

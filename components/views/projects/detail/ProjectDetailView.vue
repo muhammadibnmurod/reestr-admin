@@ -30,7 +30,7 @@
 
       <!-- Tabs -->
       <div class="px-6 pb-4">
-        <el-tabs v-model="activeTab" class="project-tabs">
+        <el-tabs v-model="activeTab" class="project-tabs" @tab-click="handleTabClick">
           <el-tab-pane label="Overview" name="overview" />
           <el-tab-pane label="Modules" name="modules" />
           <el-tab-pane label="Images" name="images" />
@@ -43,66 +43,17 @@
     <!-- Content -->
     <div class="flex-1 min-h-0 p-6 pt-4 overflow-y-auto">
       <div v-loading="loading">
-        <!-- OVERVIEW -->
-        <ProjectOverview
-          v-if="activeTab === 'overview'"
-          :project="project"
-          :pm="project?.pm"
-        />
-
-        <!-- MODULES -->
-        <ModulesSection
-          v-else-if="activeTab === 'modules'"
-          :project-id="projectId"
-        />
-
-        <!-- IMAGES -->
-        <div
-          v-else-if="activeTab === 'images'"
-          class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-        >
-          <div class="text-gray-700 dark:text-gray-200 font-semibold">
-            Images bo‘limi
-          </div>
-          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Keyingi bosqichda shu section componentini ulaymiz.
-          </div>
-        </div>
-
-        <!-- DOCUMENTS -->
-        <div
-          v-else-if="activeTab === 'documents'"
-          class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-        >
-          <div class="text-gray-700 dark:text-gray-200 font-semibold">
-            Documents bo‘limi
-          </div>
-          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Keyingi bosqichda shu section componentini ulaymiz.
-          </div>
-        </div>
-
-        <!-- ASSIGNMENTS -->
-        <div
-          v-else
-          class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700"
-        >
-          <div class="text-gray-700 dark:text-gray-200 font-semibold">
-            Assignments bo‘limi
-          </div>
-          <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-            Keyingi bosqichda shu section componentini ulaymiz.
-          </div>
-        </div>
+        <NuxtPage :project="project" :pm="project?.pm" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted, watchEffect } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
+import type { TabsPaneContext } from "element-plus";
 import api from "@/utils/axios";
 
 type Project = any;
@@ -112,17 +63,39 @@ const props = defineProps<{
 }>();
 
 const router = useRouter();
+const route = useRoute();
 const loading = ref(false);
 const project = ref<Project | null>(null);
-const activeTab = ref<
-  "overview" | "modules" | "images" | "documents" | "assignments"
->("overview");
+const activeTab = ref("overview");
+
+const handleTabClick = (tab: TabsPaneContext) => {
+  const tabName = tab.paneName as string;
+  if (tabName === "overview") {
+    router.push(`/projects/${props.projectId}`);
+  } else {
+    router.push(`/projects/${props.projectId}/${tabName}`);
+  }
+};
+
+watchEffect(() => {
+  const path = route.path;
+  if (path.endsWith("/modules")) {
+    activeTab.value = "modules";
+  } else if (path.endsWith("/images")) {
+    activeTab.value = "images";
+  } else if (path.endsWith("/documents")) {
+    activeTab.value = "documents";
+  } else if (path.endsWith("/assignments")) {
+    activeTab.value = "assignments";
+  } else if (path.match(/\/projects\/\d+$/)) {
+    activeTab.value = "overview";
+  }
+});
 
 const fetchProject = async () => {
   loading.value = true;
   try {
     const res = await api.get(`/project/${props.projectId}`);
-    // backend ko‘rinishiga mos: ba’zida res.data.data bo‘ladi
     project.value = res.data?.data ?? res.data;
   } catch (e) {
     ElMessage.error("Projectni yuklashda xatolik");
@@ -134,7 +107,7 @@ const fetchProject = async () => {
 const refresh = () => fetchProject();
 
 const goEdit = () => {
-  router.push(`/projects/${props.projectId}?mode=edit`);
+  router.push(`/projects/${props.projectId}/edit`);
 };
 
 onMounted(fetchProject);
