@@ -7,7 +7,8 @@
     "employees": "Сотрудники",
     "presentations": "Презентации",
     "projects": "Проекты",
-    "organizations": "Организации"
+    "organizations": "Организации",
+    "document_categories": "Категории документов"
   },
   "login": "Вход",
   "full_name": "Полное имя",

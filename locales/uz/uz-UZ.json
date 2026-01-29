@@ -21,7 +21,8 @@
     "employees": "Xodimlar",
     "presentations": "Taqdimotlar",
     "projects": "Loyihalar",
-    "organizations": "Tashkilotlar"
+    "organizations": "Tashkilotlar",
+    "document_categories": "Dokument kategoriyasi"
   },
   "password": "Parol",
   "test": "test uz",

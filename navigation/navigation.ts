@@ -30,5 +30,10 @@ export const navigation = [
     title: "navigation.organizations",
     route: "/organizations",
     icon: ElIconSchool,
+  },
+  {
+    title: "navigation.document_categories",
+    route: "/document-categories",
+    icon: ElIconDocument,
   }
 ];
