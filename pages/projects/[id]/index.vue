@@ -120,7 +120,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed } from "vue";
 
 const props = defineProps<{
   project: any | null;
