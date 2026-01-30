@@ -22,11 +22,18 @@
 
         <el-table-column prop="status" label="Status" width="140" />
 
-        <el-table-column label="Muddat" width="400">
-          <template #default="{ row }">
-            {{ row.startDate || "-" }} → {{ row.endDate || "-" }}
-          </template>
-        </el-table-column>
+      <el-table-column label="Muddat" width="280">
+        <template #default="{ row }">
+          <div class="flex flex-col">
+            <span class="text-sm text-gray-800 dark:text-gray-200">
+              {{ formatDate(row.startDate) }} → {{ formatDate(row.endDate) }}
+            </span>
+            <span class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+              {{ getDuration(row.startDate, row.endDate) }}
+            </span>
+          </div>
+        </template>
+      </el-table-column>
 
         <el-table-column label="Amallar" width="160" fixed="right" align="center">
           <template #default="{ row }">
@@ -85,6 +92,29 @@ const props = defineProps<{
   currentPage: number;
   pageSize: number;
 }>();
+
+const formatDate = (date?: string) => {
+  if (!date) return "-"
+
+  const d = new Date(date)
+  return d.toLocaleDateString("uz-UZ", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+}
+
+
+const getDuration = (start?: string, end?: string) => {
+  if (!start || !end) return "—";
+  const s = new Date(start);
+  const e = new Date(end);
+  if (Number.isNaN(s.getTime()) || Number.isNaN(e.getTime())) return "—";
+  const diff = Math.ceil((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24));
+  if (diff < 0) return "Muddat noto‘g‘ri";
+  if (diff === 0) return "1 kun";
+  return `${diff + 1} kun`;
+};
 
 const emit = defineEmits([
   "page-change",

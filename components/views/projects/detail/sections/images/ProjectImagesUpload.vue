@@ -71,9 +71,9 @@
       </div>
 
       <!-- note -->
-      <div class="mt-5 text-xs text-gray-500 dark:text-gray-400">
+      <!-- <div class="mt-5 text-xs text-gray-500 dark:text-gray-400">
         Eslatma: agar sizga bir nechta rasm kerak bo‘lsa, limitni oshiramiz.
-      </div>
+      </div> -->
     </div>
 
     <!-- footer (qotadi) -->
