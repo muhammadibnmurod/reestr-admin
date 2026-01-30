@@ -14,8 +14,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import SubmodulesSection from "@/components/views/projects/detail/sections/modules/submodules/SubmodulesSection.vue";
-
 const route = useRoute();
 const projectId = computed(() => Number(route.params.id));
 const moduleId = computed(() => Number(route.params.moduleId));
