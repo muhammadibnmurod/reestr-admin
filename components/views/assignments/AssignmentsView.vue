@@ -120,13 +120,14 @@
       @assigned="refresh"
     />
 
-    <AssignmentsEmployeeForm
-      v-model:open="empDialog"
-      :project-id="projectId"
-      :all-employees="employees"
-      :project-employees="employees"
-      @assigned="refresh"
-    />
+<AssignmentsEmployeeForm
+  v-model:open="empDialog"
+  :project-id="projectId"
+  :project-employees="projectEmployees"
+  @assigned="refresh"
+  @picked="(emp) => console.log('tanlandi:', emp)"
+/>
+
   </div>
 </template>
 
@@ -147,6 +148,14 @@ const employees = ref<any[]>([]);
 
 const pmDialog = ref(false);
 const empDialog = ref(false);
+
+const projectEmployees = ref<any[]>([]);
+
+const fetchProjectEmployees = async () => {
+  const res = await api.get(`/employee/${projectId.value}`);
+  projectEmployees.value = res.data?.data ?? [];
+};
+
 
 const fetchProject = async () => {
   loading.value = true;
@@ -205,7 +214,9 @@ const unassignEmployee = async (employeeId: number) => {
       },
     );
 
-    await api.delete(`/assignment/${projectId.value}/${employeeId}`);
+await api.delete("/assignment/project", {
+  data: { projectId: projectId.value, employeeId },
+});
 
     ElMessage.success("Xodim olib tashlandi");
     refresh();
