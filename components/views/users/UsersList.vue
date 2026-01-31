@@ -53,7 +53,7 @@ const pageSizeModel = computed({
       >
         <el-table-column type="selection" width="55" />
 
-        <el-table-column label="Full name" min-width="260">
+        <el-table-column :label="$t('user.fullName')" min-width="260">
           <template #default="scope">
             <div class="flex items-center gap-3">
               <div
@@ -89,7 +89,7 @@ const pageSizeModel = computed({
           </template>
         </el-table-column>
 
-        <el-table-column label="Role" width="160">
+        <el-table-column :label="$t('user.role')" align="center" width="160">
           <template #default="scope">
             <span
               class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium"
@@ -105,7 +105,7 @@ const pageSizeModel = computed({
         </el-table-column>
 
         <el-table-column
-          label="Actions"
+          :label="$t('common.actions')"
           width="160"
           fixed="right"
           align="center"
@@ -133,7 +133,6 @@ const pageSizeModel = computed({
                   <el-icon :size="16"><Edit /></el-icon>
                 </button>
               </el-tooltip>
-              
 
               <!-- DELETE -->
               <el-tooltip content="O‘chirish" placement="top">

@@ -22,7 +22,7 @@
               {{ $t("user.title") }}
             </h1>
             <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-              Foydalanuvchilar ro‘yxati, qidiruv va amallar.
+              {{ $t("user.description") }}
             </p>
           </div>
 

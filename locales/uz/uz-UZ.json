@@ -8,7 +8,8 @@
     "save": "Saqlash",
     "update": "Yangilash",
     "clear": "Tozalash",
-    "noData": "Mavjud ma'lumotlar yo'q"
+    "noData": "Mavjud ma'lumotlar yo'q",
+    "actions": "Amallar"
   },
   "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "enter_your_password_here": "Parolingizni shu yerga kiriting",
@@ -23,6 +24,10 @@
     "projects": "Loyihalar",
     "organizations": "Tashkilotlar",
     "document_categories": "Dokument kategoriyasi"
+  },
+  "organization": {
+    "title": "Tashkilotlar",
+    "selectOrganization": "Tashkilotni tanlang"
   },
   "password": "Parol",
   "test": "test uz",
@@ -55,7 +60,8 @@
     "passwordPlaceholder": "Parol kiriting",
     "passwordOptional": "Parolni o'zgartirmaslik uchun bo'sh qoldiring",
     "role": "Rol",
-    "selectRole": "Rolni tanlang"
+    "selectRole": "Rolni tanlang",
+    "description": "Foydalanuvchilar ro‘yxati, qidiruv va amallar."
   } ,
   "messages": {
     "required": "Bu maydon majburiy",

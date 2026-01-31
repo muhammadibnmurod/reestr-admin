@@ -7,7 +7,12 @@
     "employees": "Ходимлар",
     "presentations": "Тақдимотлар",
     "projects": "Лойиҳалар",
-    "organizations": "Ташкилотлар"
+    "organizations": "Ташкилотлар",
+    "document_categories": "Документ категорияси"
+  },
+  "organization": {
+    "title": "Ташкилотлар",
+    "selectOrganization": "Ташкилотни танланг"
   },
   "login": "Кириш",
   "full_name": "Тўлиқ исм",
@@ -24,7 +29,8 @@
     "create": "Яратиш",
     "clear": "Тозалаш",
     "noData": "Мавжуд маълумотлар йўқ",
-    "document_categories": "Документ категорияси"
+    "document_categories": "Документ категорияси",
+    "actions": "Амаллар"
   },
   "validation": {
     "required": "Бу майдон мажбурий",
@@ -55,7 +61,8 @@
     "passwordPlaceholder": "Парол киритинг",
     "passwordOptional": "Паролни ўзгартирмаслик учун бўш қолдиринг",
     "role": "Рол",
-    "selectRole": "Ролни танланг"
+    "selectRole": "Ролни танланг",
+    "description": "Фойдаланувчилар рўйхати, қидирув ва амаллар."
   },
   "messages": {
     "required": "Бу майдон мажбурий",

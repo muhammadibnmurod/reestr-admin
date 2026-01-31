@@ -10,6 +10,10 @@
     "organizations": "Организации",
     "document_categories": "Категории документов"
   },
+  "organization": {
+    "title": "Организации",
+    "selectOrganization": "Выберите организацию"
+  },
   "login": "Вход",
   "full_name": "Полное имя",
   "enter_your_full_name_here": "Введите ваше полное имя здесь",
@@ -24,7 +28,8 @@
     "search": "Поиск",
     "create": "Создать",
     "clear": "Очистить",
-    "noData": "Нет доступных данных"
+    "noData": "Нет доступных данных",
+    "actions": "Действия"
   },
   "validation": {
     "required": "Это поле обязательно",
@@ -55,7 +60,8 @@
     "passwordPlaceholder": "Введите пароль",
     "passwordOptional": "Оставьте пустым, чтобы сохранить текущий пароль",
     "role": "Роль",
-    "selectRole": "Выберите роль"
+    "selectRole": "Выберите роль",
+    "description": "Список пользователей, поиск и действия."
   },
   "messages": {
     "required": "Это поле обязательно",

@@ -2,7 +2,6 @@
   <el-dialog
     v-model="isOpen"
     width="650px"
-    align-center
     append-to-body
     destroy-on-close
     class="user-dialog"
@@ -36,6 +35,7 @@
     </template>
 
     <!-- BODY (scroll faqat shu joyda) -->
+
     <div class="body-scroll px-6 py-5">
       <el-form
         ref="formRef"
@@ -52,11 +52,11 @@
                 :size="96"
                 :src="
                   imagePreview ||
-                  'https://api.dicebear.com/7.x/avataaars/svg?seed=default'
+                  toFileUrl(uploadedImagePath || formState.image)
                 "
-                class="border-4 border-white dark:border-gray-800 shadow-xl"
+                :icon="ElIconUser"
+                class="bg-gray-100 dark:bg-gray-700 cursor-pointer"
               />
-
               <div
                 v-if="!imageUploading"
                 @click="triggerUpload"
@@ -191,7 +191,7 @@
 
           <!-- ✅ ORGANIZATION SELECT -->
           <el-form-item
-            label="Organization"
+            :label="$t('organization.title')"
             prop="organizationId"
             :rules="[
               { required: true, message: requiredMsg, trigger: 'change' },
@@ -203,7 +203,7 @@
               filterable
               clearable
               :loading="orgLoading"
-              placeholder="Organization tanlang..."
+              :placeholder="$t('organization.selectOrganization')"
             >
               <el-option
                 v-for="org in organizations"
@@ -285,6 +285,18 @@ const isOpen = ref(!!props.open);
 const formRef = ref<FormInstance>();
 const uploadRef = ref<UploadInstance>();
 
+// const toFileUrl = (path?: string) => {
+//   if (!path) return "";
+//   if (path.startsWith("http")) return path;
+//   return `https://reestr.das-uty.uz/api/${path}`;
+// };
+
+const toFileUrl = (path?: string) => {
+  if (!path) return "";
+  if (path.startsWith("http") || path.startsWith("data:")) return path;
+  return `https://reestr.das-uty.uz/api/${path}`;
+};
+
 const saveLoading = ref(false);
 const imageUploading = ref(false);
 const imagePreview = ref("");
@@ -312,7 +324,6 @@ watch(isOpen, (v) => emit("update:open", v));
 
 const getOrgLabel = (org: any) => {
   try {
-    // agar translation composable bo'lsa:
     if (org?.name && typeof useGetTranslation === "function") {
       return useGetTranslation(org.name);
     }
@@ -441,7 +452,10 @@ watch(isOpen, (val) => {
       organizationId: props.editData.organizationId ?? null,
     };
 
-    imagePreview.value = props.editData.image || "";
+    imagePreview.value = props.editData.image
+      ? toFileUrl(props.editData.image)
+      : "";
+
     uploadedImagePath.value = props.editData.image || "";
   } else {
     formState.value = {
