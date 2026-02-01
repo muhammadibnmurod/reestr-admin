@@ -36,7 +36,7 @@
     </div>
 
     <!-- Content -->
-    <div class="flex-1 min-h-0 p-6 pt-4 overflow-y-auto">
+    <div class="flex-1 min-h-0 p-6  overflow-y-auto">
       <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
         <!-- PM -->
         <div

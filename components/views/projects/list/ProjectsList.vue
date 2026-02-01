@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm h-full flex flex-col">
     <el-table
       :data="projects"
       v-loading="loading"

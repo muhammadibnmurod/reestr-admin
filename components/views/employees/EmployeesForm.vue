@@ -75,7 +75,7 @@
     <!-- Footer -->
     <template #footer>
       <div
-        class="flex items-center justify-end gap-3 bg-gray-50 dark:bg-gray-800/50 -mx-6 -mb-6 px-6 py-4 rounded-b-lg"
+        class="flex items-center justify-end gap-3 dark:bg-gray-800/50 px-6 py-4 rounded-b-lg"
       >
         <el-button size="large" @click="onCancel" class="px-6">
           {{ isViewMode ? $t("common.close") : $t("common.cancel") }}

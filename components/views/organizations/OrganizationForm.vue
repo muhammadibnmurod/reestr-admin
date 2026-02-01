@@ -2,7 +2,6 @@
   <el-dialog
     v-model="dialogVisible"
     width="640px"
-    align-center
     append-to-body
     destroy-on-close
     :close-on-click-modal="true"
@@ -253,8 +252,15 @@ const onCancel = () => {
 <style scoped>
 .modern-org-dialog :deep(.el-dialog) {
   @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden;
-  height: 60vh; 
-  max-height: 60vh;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+/* 
+.modern-org-dialog :deep(.el-dialog) {
+  @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden ;
+  height: 30vh; 
+  max-height: 30vh;
   display: flex;
   flex-direction: column;
 }
@@ -276,7 +282,7 @@ const onCancel = () => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-}
+} */
 
 .dlg-header {
   @apply flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700

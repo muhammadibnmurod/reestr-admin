@@ -7,7 +7,7 @@
         <AppNavbar @toggle-sidebar="toggleSidebar" :collapsed="isSidebarCollapsed" />
       </header>
 
-      <main class="flex-1 p-6  overflow-y-auto bg-[#f8f9fa] dark:bg-[#1e222b]">
+      <main class="flex-1 p-6 h-full overflow-y-auto bg-[#f8f9fa] dark:bg-[#1e222b]">
         <NuxtPage />
       </main>
     </div>

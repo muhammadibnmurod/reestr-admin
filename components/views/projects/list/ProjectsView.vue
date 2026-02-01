@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col gap-6 h-screen overflow-hidden p-6 bg-gray-50 dark:bg-gray-900"
+    class="flex flex-col gap-6 h-screen overflow-hidden p-6 pt-2 bg-gray-50 dark:bg-gray-900"
   >
     <!-- Header + Create button -->
     <div class="flex justify-between items-center pb-4">
@@ -22,18 +22,18 @@
     <ProjectsFilter v-model:search="params.search" @search="handleSearch" />
 
     <!-- Projects table -->
-    <ProjectsList
-      :projects="projects"
-      :loading="loading"
-      :total="totalRecords"
-      :currentPage="params.page"
-      :pageSize="params.size"
-      @page-change="handlePageChange"
-      @size-change="handleSizeChange"
-      @delete="deleteProject"
-      @edit="editProject"
-      @view="viewProject"
-    />
+      <ProjectsList
+        :projects="projects"
+        :loading="loading"
+        :total="totalRecords"
+        :currentPage="params.page"
+        :pageSize="params.size"
+        @page-change="handlePageChange"
+        @size-change="handleSizeChange"
+        @delete="deleteProject"
+        @edit="editProject"
+        @view="viewProject"
+      />
   </div>
 </template>
 
@@ -43,9 +43,6 @@ import { ElMessage } from "element-plus";
 import api from "@/utils/axios";
 import { useRouter } from "vue-router";
 import { Plus as ElIconPlus } from "@element-plus/icons-vue";
-
-import ProjectsFilter from "~/components/views/projects/list/ProjectsFilter.vue";
-import ProjectsList from "~/components/views/projects/list/ProjectsList.vue";
 
 const router = useRouter();
 
@@ -58,7 +55,14 @@ const params = ref({ page: 1, size: 10, status: "pending", search: "" });
 const fetchProjects = async () => {
   loading.value = true;
   try {
-    const res = await api.get("/project", { params: params.value });
+    const res = await api.get("/project", {
+      params: {
+        page: params.value.page,
+        size: params.value.size,
+        status: params.value.status,
+        name: params.value.search || undefined,
+      },
+    });
     projects.value = res.data.data.data;
     totalRecords.value = res.data.data.totalPage * params.value.size;
   } catch (e) {
@@ -85,11 +89,9 @@ const viewProject = (project: any) => {
   router.push(`/projects/${project.id}`);
 };
 
-
 const editProject = (project: any) => {
   router.push(`/projects/${project.id}/edit`);
 };
-
 
 const createProject = () => {
   router.push("/projects/create");

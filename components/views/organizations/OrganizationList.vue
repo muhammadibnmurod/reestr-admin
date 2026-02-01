@@ -7,7 +7,6 @@
         v-loading="loading"
         stripe
         class="w-full"
-        :height="tableHeight"
         header-cell-class-name="bg-gray-50 dark:bg-[#0f172a] text-gray-600 dark:text-gray-300 font-semibold"
         :row-class-name="
           () =>
@@ -151,11 +150,9 @@ const pageSizeModel = computed({
   set: (val) => emit("size-change", val),
 });
 
-// ❗️Table height ni dynamic hisoblash
 const tableHeight = ref(0);
 
 const calculateTableHeight = () => {
-  // Footer balandligi (~80px) ni ayirib, qolganini table ga beramiz
   const footerHeight = 80;
   const parentHeight = document.querySelector(".list-shell")?.clientHeight || 0;
   tableHeight.value = parentHeight - footerHeight;
