@@ -62,7 +62,9 @@
     "passwordOptional": "Parolni o'zgartirmaslik uchun bo'sh qoldiring",
     "role": "Rol",
     "selectRole": "Rolni tanlang",
-    "description": "Foydalanuvchilar ro‘yxati, qidiruv va amallar."
+    "description": "Foydalanuvchilar ro‘yxati, qidiruv va amallar.",
+    "viewUser": "Foydalanuvchini ko'rish",
+    "viewDescription": "Foydalanuvchi ma'lumotlarini ko'rish"
   } ,
   "messages": {
     "required": "Bu maydon majburiy",

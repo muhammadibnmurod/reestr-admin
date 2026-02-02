@@ -147,7 +147,7 @@ const emit = defineEmits<{
 
 const uploadRef = ref<UploadInstance>();
 const uploading = ref(false);
-const preview = ref(props.initialPreview || "");
+const preview = ref('');
 
 watch(
   () => props.initialPreview,
@@ -164,19 +164,6 @@ watch(
     }
   },
   { immediate: true }
-);
-
-watch(
-  () => props.modelValue,
-  (val) => {
-    if (val && !preview.value) {
-      if (val.startsWith('http')) {
-        preview.value = val;
-      } else {
-        preview.value = `https://reestr.das-uty.uz/${val}`;
-      }
-    }
-  }
 );
 
 const getPlaceholderText = () => {
@@ -196,7 +183,7 @@ const getInfoText = () => {
 };
 
 const getMaxSize = () => {
-  return props.uploadType === "icon" ? 1 : 2;
+  return props.uploadType === "icon" ? 1 : 7;
 };
 
 const triggerUpload = () => {

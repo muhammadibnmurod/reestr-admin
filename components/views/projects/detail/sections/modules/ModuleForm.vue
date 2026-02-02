@@ -264,10 +264,15 @@ const submit = async () => {
   try {
     await formRef.value.validate();
     saving.value = true;
-    const payload = { projectId: props.projectId, ...form };
-    if (props.editData?.id)
-      await api.put(`/module/${props.editData.id}`, payload);
-    else await api.post("/module", payload);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { id, projectId, completionPercent, ...cleanedForm } = form;
+
+    if (props.editData?.id) {
+      await api.put(`/module/${props.editData.id}`, cleanedForm);
+    } else {
+      const payload = { projectId: props.projectId, ...cleanedForm };
+      await api.post("/module", payload);
+    }
     emit("saved");
     openModel.value = false;
   } catch (e: any) {

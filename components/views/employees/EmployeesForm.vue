@@ -63,10 +63,16 @@
           :disabled="isViewMode"
         >
           <EmployeeImageUpload
+            :key="
+              (props.editData?.id ?? 'new') +
+              '-' +
+              (props.isViewMode ? 'view' : props.isEditMode ? 'edit' : 'create')
+            "
             v-model="form.image"
             :initial-preview="imagePreview"
             :disabled="isViewMode"
           />
+
           <EmployeeFormFields v-model="form" />
         </el-form>
       </div>
@@ -153,6 +159,12 @@ const dialogVisible = computed({
   set: (val) => emit("update:open", val),
 });
 
+const toAbsoluteUrl = (path: string) => {
+  if (!path) return "";
+  if (path.startsWith("http")) return path;
+  return 'https://reestr.das-uty.uz/api/' + path;
+};
+
 const resetForm = () => {
   form.value = {
     fullNameUz: "",
@@ -173,7 +185,7 @@ const resetForm = () => {
 watch(
   () => props.editData,
   (newVal) => {
-    if (props.isEditMode && newVal) {
+    if ((props.isEditMode || props.isViewMode) && newVal) {
       form.value = {
         fullNameUz: newVal.fullNameUz || "",
         fullNameEn: newVal.fullNameEn || "",
@@ -184,9 +196,12 @@ watch(
         positionRu: newVal.positionRu || "",
         positionKiril: newVal.positionKiril || "",
         image: newVal.image || "",
-        managerId: newVal.managerId || null,
+        managerId: newVal.managerId ?? null,
       };
-      imagePreview.value = newVal.image || "";
+
+      imagePreview.value = toAbsoluteUrl(newVal.image || "");
+      // agar validate xatolar qolib ketayotgan bo'lsa:
+      formRef.value?.clearValidate();
     } else {
       resetForm();
     }

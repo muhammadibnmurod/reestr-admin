@@ -219,8 +219,7 @@ const submit = async () => {
   try {
     await formRef.value.validate();
     saving.value = true;
-    const payload = {
-      moduleId: props.moduleId,
+    const commonPayload = {
       nameUz: form.nameUz,
       nameRu: form.nameRu,
       nameEn: form.nameEn,
@@ -229,9 +228,12 @@ const submit = async () => {
       startDate: form.startDate,
       endDate: form.endDate,
     };
-    if (props.editData?.id)
-      await api.put(`/submodule/${props.editData.id}`, payload);
-    else await api.post("/submodule", payload);
+    if (props.editData?.id) {
+      await api.put(`/submodule/${props.editData.id}`, commonPayload);
+    } else {
+      const payload = { ...commonPayload, moduleId: props.moduleId };
+      await api.post("/submodule", payload);
+    }
     emit("saved");
     openModel.value = false;
   } catch (e: any) {

@@ -2,7 +2,7 @@
   <div
     class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col min-h-0"
   >
-    <!-- header (qotadi) -->
+    <!-- header -->
     <div
       class="p-6 border-b border-gray-200/60 dark:border-gray-700/60 flex-shrink-0"
     >
@@ -12,49 +12,69 @@
             Documents
           </h2>
           <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            Project hujjatlari ro‘yxati, yuklash va amallar
+            Project hujjatlari ro‘yxati (Main / Extra), yuklash va amallar
           </p>
         </div>
 
-        <el-button v-if="!readonly" type="primary" @click="isUploadOpen = true">
-          Hujjat Yuklash
+        <el-button
+          v-if="!readonly"
+          type="primary"
+          class="!rounded-xl"
+          :icon="Plus"
+          @click="uploadOpen = true"
+        >
+          Hujjat yuklash
         </el-button>
 
+        <!-- ✅ v-if olib tashlandi: modal doim DOMda tursin -->
         <ProjectDocumentsUpload
-          v-if="!readonly"
-          v-model:open="isUploadOpen"
+          v-model:open="uploadOpen"
           :project-id="projectId"
-          @uploaded="onUploaded"
+          @uploaded="refresh"
         />
       </div>
 
-      <!-- filter -->
-      <div class="mt-4">
+      <!-- filter + tabs -->
+      <div class="mt-4 flex flex-col md:flex-row md:items-center gap-3">
         <el-input
           v-model="search"
           clearable
           placeholder="Qidirish... (nom bo‘yicha)"
-          @clear="search = ''"
           class="max-w-md"
+          @clear="search = ''"
         >
           <template #prefix>
             <el-icon><Search /></el-icon>
           </template>
         </el-input>
+
+        <el-tabs v-model="activeTab" type="card" class="ml-0 md:ml-auto">
+          <el-tab-pane name="main" label="Main documents" />
+          <el-tab-pane name="extra" label="Extra documents" />
+        </el-tabs>
       </div>
     </div>
 
-    <!-- list (faqat shu scroll) -->
+    <!-- list -->
     <div class="flex-1 min-h-0 overflow-y-auto p-6 pt-4">
       <ProjectDocumentsList
-        :items="filteredItems"
+        :items="activeTab === 'main' ? filteredMain : filteredExtra"
         :loading="loading"
         :readonly="readonly"
         :downloading-id="downloadingId"
-        @delete="confirmDelete"
         @download="downloadDoc"
+        @delete="confirmDelete"
+        @attach="openAttach"
       />
     </div>
+
+    <!-- ✅ main doc attach modal -->
+    <ProjectMainDocAttach
+      v-model:open="attachOpen"
+      :project-id="projectId"
+      :doc="attachRow"
+      @uploaded="refresh"
+    />
   </div>
 </template>
 
@@ -62,65 +82,147 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { Search } from "@element-plus/icons-vue";
+import { Plus, Search } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 
 import ProjectDocumentsUpload from "./ProjectDocumentsUpload.vue";
 import ProjectDocumentsList from "./ProjectDocumentsList.vue";
+import ProjectMainDocAttach from "./ProjectMainDocAttach.vue";
 
-type ProjectDoc = {
+type DocItem = {
   id: number;
+  nameUz?: string;
+  nameRu?: string;
+  nameEn?: string;
+  nameKiril?: string;
   file?: string;
-  name?: string;
-  createdAt?: string;
+  given?: boolean;
+  type?: "main" | "extra";
+  category?: any;
 };
 
 const props = defineProps<{ readonly?: boolean }>();
+const readonly = computed(() => !!props.readonly);
+
 const route = useRoute();
 const projectId = computed(() => Number(route.params.id));
 
 const loading = ref(false);
-const isUploadOpen = ref(false);
-const items = ref<ProjectDoc[]>([]);
+const uploadOpen = ref(false);
+
+const activeTab = ref<"main" | "extra">("main");
 const search = ref("");
+
+const mainItems = ref<DocItem[]>([]);
+const extraItems = ref<DocItem[]>([]);
 const downloadingId = ref<number | null>(null);
 
-// const API = {
-//   list: (projectId: number) => `/project/document/${projectId}`,
-//   del: (id: number) => `/project/document/${id}`,
-// };
+const attachOpen = ref(false);
+const attachRow = ref<DocItem | null>(null);
 
-const fetchDocs = async () => {
+const openAttach = (row: DocItem) => {
+  attachRow.value = row;
+  attachOpen.value = true;
+};
+
+const API = {
+  main: (pid: number) => `/document/${pid}`,
+  extra: (pid: number) => `/document/extra/${pid}`,
+  delMain: (id: number) => `/document/${id}`,
+  delExtra: (id: number) => `/document/extra/${id}`,
+};
+
+const fetchAll = async () => {
   loading.value = true;
   try {
-    const res = await api.get(`/document/${projectId.value}`);
-    items.value = res.data?.data ?? [];
-  } catch (e) {
+    const [mRes, eRes] = await Promise.all([
+      api.get(API.main(projectId.value)),
+      api.get(API.extra(projectId.value)),
+    ]);
+
+    mainItems.value = (mRes.data?.data ?? []).map((x: any) => ({
+      ...x,
+      type: "main",
+    }));
+    extraItems.value = (eRes.data?.data ?? []).map((x: any) => ({
+      ...x,
+      type: "extra",
+    }));
+  } catch {
     ElMessage.error("Documentlarni yuklashda xatolik");
+    mainItems.value = [];
+    extraItems.value = [];
   } finally {
     loading.value = false;
   }
 };
 
-onMounted(fetchDocs);
+const refresh = async () => {
+  await fetchAll();
+};
 
-const filteredItems = computed(() => {
-  const q = search.value.trim().toLowerCase();
-  if (!q) return items.value;
+onMounted(fetchAll);
 
-  return items.value.filter((d: any) =>
-    String(d.name || d.file || d.id || "")
+const q = computed(() => search.value.trim().toLowerCase());
+
+const filteredMain = computed(() => {
+  if (!q.value) return mainItems.value;
+  return mainItems.value.filter((d) =>
+    [d.nameUz, d.nameEn, d.nameRu, d.nameKiril]
+      .filter(Boolean)
+      .join(" ")
       .toLowerCase()
-      .includes(q),
+      .includes(q.value),
   );
 });
 
-const onUploaded = async () => {
-  isUploadOpen.value = false;
-  await fetchDocs();
+const filteredExtra = computed(() => {
+  if (!q.value) return extraItems.value;
+  return extraItems.value.filter((d) =>
+    [d.nameUz, d.nameEn, d.nameRu, d.nameKiril]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .includes(q.value),
+  );
+});
+
+const getFileUrl = (path?: string) => {
+  if (!path) return "";
+  if (path.startsWith("http") || path.startsWith("data:")) return path;
+  return `https://reestr.das-uty.uz/api/${path}`;
 };
 
-const confirmDelete = async (row: ProjectDoc) => {
+const bestTitle = (row: DocItem) =>
+  row.nameUz || row.nameEn || row.nameRu || row.nameKiril || `#${row.id}`;
+
+const downloadDoc = async (row: DocItem) => {
+  const url = getFileUrl(row.file);
+  if (!url) return ElMessage.warning("Fayl biriktirilmagan");
+
+  downloadingId.value = row.id;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Network error");
+    const blob = await response.blob();
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = bestTitle(row);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  } catch {
+    ElMessage.error("Yuklab olishda xatolik");
+  } finally {
+    downloadingId.value = null;
+  }
+};
+
+const confirmDelete = async (row: DocItem) => {
+  if (readonly.value) return;
+
   try {
     await ElMessageBox.confirm("Hujjatni o‘chirmoqchimisiz?", "Ogohlantirish", {
       type: "warning",
@@ -128,50 +230,11 @@ const confirmDelete = async (row: ProjectDoc) => {
       cancelButtonText: "Yo‘q",
     });
 
-    await api.delete(`/document/${row.id}`);
+    if (row.type === "extra") await api.delete(API.delExtra(row.id));
+    else await api.delete(API.delMain(row.id));
+
     ElMessage.success("O‘chirildi");
-    fetchDocs();
-  } catch (_) {}
-};
-
-const getFileUrl = (path?: string) => {
-  if (!path) return "";
-  if (path.startsWith("http") || path.startsWith("data:")) {
-    return path;
-  }
-  return `https://reestr.das-uty.uz/api/${path}`;
-};
-
-const fileName = (path?: string) => {
-  if (!path) return "";
-  try {
-    const parts = path.split("/");
-    return parts[parts.length - 1];
-  } catch {
-    return path;
-  }
-};
-
-const downloadDoc = async (row: ProjectDoc) => {
-  const url = row.file ? getFileUrl(row.file) : "";
-  if (!url) return;
-
-  downloadingId.value = row.id;
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error("Network response was not ok.");
-    const blob = await response.blob();
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = row.name || fileName(row.file) || "download";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  } catch (error) {
-    ElMessage.error("Hujjatni yuklashda xatolik");
-  } finally {
-    downloadingId.value = null;
-  }
+    refresh();
+  } catch {}
 };
 </script>

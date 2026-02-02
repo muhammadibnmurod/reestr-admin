@@ -6,7 +6,6 @@
     destroy-on-close
     class="user-dialog"
   >
-    <!-- HEADER -->
     <template #header>
       <div
         class="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700"
@@ -15,26 +14,30 @@
           class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg"
         >
           <el-icon :size="18" class="text-white">
-            <component :is="isEditMode ? Edit : Plus" />
+            <component :is="isViewMode ? User : isEditMode ? Edit : Plus" />
           </el-icon>
         </div>
 
         <div class="flex-1">
           <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-            {{ isEditMode ? $t("user.editUser") : $t("user.createUser") }}
+            <span v-if="isViewMode">{{
+              $t("user.viewUser") || "Foydalanuvchi ma'lumotlari"
+            }}</span>
+            <span v-else-if="isEditMode">{{ $t("user.editUser") }}</span>
+            <span v-else>{{ $t("user.createUser") }}</span>
           </h3>
           <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
             {{
-              isEditMode
-                ? $t("user.editDescription")
-                : $t("user.createDescription")
+              isViewMode
+                ? $t("user.viewDescription") || "Ma'lumotlarni ko'rish rejimi"
+                : isEditMode
+                  ? $t("user.editDescription")
+                  : $t("user.createDescription")
             }}
           </p>
         </div>
       </div>
     </template>
-
-    <!-- BODY (scroll faqat shu joyda) -->
 
     <div class="body-scroll px-6 py-5">
       <el-form
@@ -42,9 +45,9 @@
         size="default"
         label-position="top"
         :model="formState"
+        :disabled="isViewMode"
         @submit.prevent
       >
-        <!-- Avatar -->
         <div class="mb-6 flex flex-col items-center">
           <div v-loading="imageUploading" class="relative">
             <div class="relative group">
@@ -55,10 +58,12 @@
                   toFileUrl(uploadedImagePath || formState.image)
                 "
                 :icon="ElIconUser"
-                class="bg-gray-100 dark:bg-gray-700 cursor-pointer"
+                class="bg-gray-100 dark:bg-gray-700"
+                :class="!isViewMode ? 'cursor-pointer' : ''"
               />
+
               <div
-                v-if="!imageUploading"
+                v-if="!imageUploading && !isViewMode"
                 @click="triggerUpload"
                 class="absolute inset-0 bg-black/60 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center cursor-pointer backdrop-blur-sm"
               >
@@ -66,7 +71,7 @@
               </div>
 
               <el-button
-                v-if="uploadedImagePath && !imageUploading"
+                v-if="uploadedImagePath && !imageUploading && !isViewMode"
                 circle
                 type="danger"
                 size="small"
@@ -79,6 +84,7 @@
           </div>
 
           <el-upload
+            v-if="!isViewMode"
             ref="uploadRef"
             :auto-upload="false"
             :show-file-list="false"
@@ -89,7 +95,7 @@
             <el-button />
           </el-upload>
 
-          <div class="mt-3 text-center">
+          <div v-if="!isViewMode" class="mt-3 text-center">
             <el-button
               type="primary"
               link
@@ -103,11 +109,9 @@
                   : $t("user.selectImage")
               }}
             </el-button>
-            <p class="text-xs text-gray-400 mt-1">PNG, JPG (max 5MB)</p>
           </div>
         </div>
 
-        <!-- FIELDS -->
         <div class="space-y-4">
           <el-form-item
             :label="$t('user.fullName')"
@@ -136,6 +140,7 @@
           </el-form-item>
 
           <el-form-item
+            v-if="!isViewMode"
             :label="$t('user.password')"
             prop="password"
             :rules="
@@ -165,11 +170,7 @@
               { required: true, message: requiredMsg, trigger: 'change' },
             ]"
           >
-            <el-select
-              v-model="formState.role"
-              :placeholder="$t('user.selectRole')"
-              class="w-full"
-            >
+            <el-select v-model="formState.role" class="w-full">
               <el-option
                 v-for="opt in UserRoleOptions"
                 :key="opt.value"
@@ -189,7 +190,6 @@
             </el-select>
           </el-form-item>
 
-          <!-- ✅ ORGANIZATION SELECT -->
           <el-form-item
             :label="$t('organization.title')"
             prop="organizationId"
@@ -201,7 +201,6 @@
               v-model="formState.organizationId"
               class="w-full"
               filterable
-              clearable
               :loading="orgLoading"
               :placeholder="$t('organization.selectOrganization')"
             >
@@ -212,23 +211,23 @@
                 :value="org.id"
               />
             </el-select>
-
-            <div v-if="orgError" class="text-xs text-red-500 mt-1">
-              {{ orgError }}
-            </div>
           </el-form-item>
         </div>
       </el-form>
     </div>
 
-    <!-- FOOTER -->
     <template #footer>
-      <div class="footer-bar px-6 py-4">
-        <el-button size="default" @click="onCancel" :disabled="saveLoading">
-          {{ $t("common.cancel") }}
+      <div
+        class="footer-bar px-6 py-4 border-t border-gray-100 dark:border-gray-800"
+      >
+        <el-button size="default" @click="onCancel">
+          {{
+            isViewMode ? $t("common.close") || "Yopish" : $t("common.cancel")
+          }}
         </el-button>
 
         <el-button
+          v-if="!isViewMode"
           type="primary"
           size="default"
           @click="onSubmit"
@@ -259,6 +258,7 @@ import {
   Check,
   Plus,
   Edit,
+  User,
 } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 import { useI18n } from "vue-i18n";
@@ -267,12 +267,12 @@ import { UserRole } from "@/enums/UserRole";
 import { UserRoleOptions } from "@/constants/user-role";
 
 const { t } = useI18n();
-
 const requiredMsg = computed(() => t("messages.required") || "Majburiy");
 
 const props = defineProps<{
   open?: boolean;
   isEditMode?: boolean;
+  isViewMode?: boolean;
   editData?: any;
 }>();
 
@@ -285,12 +285,6 @@ const isOpen = ref(!!props.open);
 const formRef = ref<FormInstance>();
 const uploadRef = ref<UploadInstance>();
 
-// const toFileUrl = (path?: string) => {
-//   if (!path) return "";
-//   if (path.startsWith("http")) return path;
-//   return `https://reestr.das-uty.uz/api/${path}`;
-// };
-
 const toFileUrl = (path?: string) => {
   if (!path) return "";
   if (path.startsWith("http") || path.startsWith("data:")) return path;
@@ -301,11 +295,8 @@ const saveLoading = ref(false);
 const imageUploading = ref(false);
 const imagePreview = ref("");
 const uploadedImagePath = ref("");
-
-// ✅ organizations list
 const organizations = ref<any[]>([]);
 const orgLoading = ref(false);
-const orgError = ref("");
 
 const formState = ref({
   fullName: "",
@@ -323,50 +314,30 @@ watch(
 watch(isOpen, (v) => emit("update:open", v));
 
 const getOrgLabel = (org: any) => {
-  try {
-    if (org?.name && typeof useGetTranslation === "function") {
-      return useGetTranslation(org.name);
-    }
-  } catch {}
-  // fallback:
-  return org?.name?.uz || org?.name?.en || org?.name?.ru || `ID: ${org?.id}`;
+  return org?.name?.uz || org?.name?.ru || org?.name?.en || `ID: ${org?.id}`;
 };
 
 const fetchOrganizations = async () => {
-  orgError.value = "";
   orgLoading.value = true;
   try {
     const { data } = await api.get("/organizations", {
       params: { page: 1, size: 1000 },
     });
-
     organizations.value = data?.data?.data ?? data?.data ?? [];
-  } catch (e: any) {
-    orgError.value =
-      e.response?.data?.message || "Organization yuklashda xatolik";
+  } catch (e) {
+    console.error("Org Error", e);
   } finally {
     orgLoading.value = false;
   }
 };
 
-onMounted(() => {
-  fetchOrganizations();
-});
-
 const triggerUpload = () => {
-  if (imageUploading.value) return;
+  if (imageUploading.value || props.isViewMode) return;
   uploadRef.value?.$el.querySelector('input[type="file"]')?.click();
 };
 
 const handleImageChange = async (file: UploadFile) => {
-  if (!file.raw) return;
-
-  if (file.raw.size > 5 * 1024 * 1024) {
-    return ElMessage.error(t("messages.fileTooLarge") || "Max 5MB");
-  }
-  if (!file.raw.type.startsWith("image/")) {
-    return ElMessage.error("Faqat rasm");
-  }
+  if (!file.raw || props.isViewMode) return;
 
   const reader = new FileReader();
   reader.onload = (e) => (imagePreview.value = e.target?.result as string);
@@ -376,17 +347,10 @@ const handleImageChange = async (file: UploadFile) => {
     imageUploading.value = true;
     const formData = new FormData();
     formData.append("file", file.raw);
-
-    const res = await api.post("/files", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
+    const res = await api.post("/files", formData);
     uploadedImagePath.value = res.data?.data?.path || res.data?.path;
-    ElMessage.success(t("messages.imageUploaded") || "Yuklandi");
-  } catch (error: any) {
-    imagePreview.value = "";
-    uploadedImagePath.value = "";
-    ElMessage.error(error.response?.data?.message || "Xatolik");
+  } catch (error) {
+    ElMessage.error("Rasm yuklashda xatolik");
   } finally {
     imageUploading.value = false;
   }
@@ -398,51 +362,39 @@ const clearImage = () => {
 };
 
 const onSubmit = async () => {
-  if (!formRef.value || imageUploading.value) return;
-
+  if (!formRef.value || imageUploading.value || props.isViewMode) return;
   try {
     await formRef.value.validate();
     saveLoading.value = true;
-
-    const payload: any = {
-      fullName: formState.value.fullName,
-      username: formState.value.username,
-      role: formState.value.role,
+    const payload = {
+      ...formState.value,
       image: uploadedImagePath.value || null,
-      organizationId: formState.value.organizationId, // ✅
     };
+    if (!payload.password && props.isEditMode) delete (payload as any).password;
 
-    // create mode'da password majburiy, edit'da ixtiyoriy
-    if (formState.value.password) payload.password = formState.value.password;
-
-    if (props.isEditMode && props.editData?.id) {
+    if (props.isEditMode) {
       await api.put(`/user/${props.editData.id}`, payload);
-      ElMessage.success(t("messages.updateSuccess") || "Yangilandi");
     } else {
       await api.post("/user", payload);
-      ElMessage.success(t("messages.createSuccess") || "Yaratildi");
     }
-
     emit("save");
     isOpen.value = false;
-  } catch (e: any) {
-    ElMessage.error(e.response?.data?.message || "Xatolik");
+  } catch (e) {
+    ElMessage.error("Xatolik yuz berdi");
   } finally {
     saveLoading.value = false;
   }
 };
 
 const onCancel = () => {
-  if (!saveLoading.value) isOpen.value = false;
+  isOpen.value = false;
 };
 
 watch(isOpen, (val) => {
   if (!val) return;
-
-  // org list bo'lmasa ham, modal ochilganda qayta chaqirib qo'yamiz
   if (!organizations.value.length) fetchOrganizations();
 
-  if (props.isEditMode && props.editData) {
+  if ((props.isEditMode || props.isViewMode) && props.editData) {
     formState.value = {
       fullName: props.editData.fullName || "",
       username: props.editData.username || "",
@@ -451,11 +403,9 @@ watch(isOpen, (val) => {
       role: props.editData.role || UserRole.USER,
       organizationId: props.editData.organizationId ?? null,
     };
-
     imagePreview.value = props.editData.image
       ? toFileUrl(props.editData.image)
       : "";
-
     uploadedImagePath.value = props.editData.image || "";
   } else {
     formState.value = {
@@ -466,46 +416,40 @@ watch(isOpen, (val) => {
       role: UserRole.USER,
       organizationId: null,
     };
-    imagePreview.value = "";
-    uploadedImagePath.value = "";
+    clearImage();
   }
-
   formRef.value?.clearValidate();
 });
+
+onMounted(fetchOrganizations);
 </script>
 
 <style scoped>
-/* Dialog shell */
 :deep(.el-dialog) {
   @apply !rounded-2xl overflow-hidden;
 }
-
-/* Header / Footer padding template orqali */
-:deep(.el-dialog__header) {
-  @apply !p-0;
-}
+:deep(.el-dialog__header),
 :deep(.el-dialog__footer) {
   @apply !p-0;
 }
-
-/* ✅ Modal qotadi: body scroll */
 :deep(.el-dialog__body) {
   @apply !p-0 overflow-hidden;
 }
-
-/* ✅ faqat ichidagi body-scroll scroll bo‘ladi */
 .body-scroll {
-  max-height: 60vh;
+  max-height: 70vh;
   overflow-y: auto;
 }
-
-/* footer */
 .footer-bar {
-  @apply flex items-center justify-end gap-3 py-2;
+  @apply flex items-center justify-end gap-3;
 }
-
-/* label */
 :deep(.el-form-item__label) {
-  @apply text-gray-700 dark:text-gray-300 font-medium select-none;
+  @apply text-gray-700 dark:text-gray-300 font-medium;
+}
+/* View mode styling for disabled inputs */
+:deep(.el-input.is-disabled .el-input__wrapper) {
+  @apply bg-gray-50 dark:bg-gray-800/50 shadow-none border-transparent;
+}
+:deep(.el-input.is-disabled .el-input__inner) {
+  @apply text-gray-700 dark:text-gray-200 !cursor-default;
 }
 </style>

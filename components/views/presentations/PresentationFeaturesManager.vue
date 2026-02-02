@@ -39,7 +39,7 @@
               </span>
             </div>
             <span class="font-semibold text-gray-700 dark:text-gray-300">
-              Xususiyat {{ index + 1 }}
+              Xususiyat {{ feature.order }}
             </span>
           </div>
           

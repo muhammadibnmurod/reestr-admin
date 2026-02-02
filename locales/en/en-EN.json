@@ -61,7 +61,9 @@
     "passwordOptional": "Leave blank to keep current password",
     "role": "Role",
     "selectRole": "Select role",
-    "description": "List of users, search and actions."
+    "description": "List of users, search and actions.",
+    "viewUser": "View User",
+    "viewDescription": "View user information"
   },
   "messages": {
     "required": "This field is required",

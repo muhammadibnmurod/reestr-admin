@@ -239,7 +239,7 @@ const onSubmit = async () => {
       parentId: form.parentId ?? 0,
     };
     if (props.editData?.id)
-      await api.put(`/organizations/${props.editData.id}`, payload);
+      await api.patch(`/organizations/${props.editData.id}`, payload);
     else await api.post("/organizations", payload);
     ElMessage.success("Muvaffaqiyatli saqlandi");
     emit("save");
