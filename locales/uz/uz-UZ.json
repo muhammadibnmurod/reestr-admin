@@ -9,7 +9,8 @@
     "update": "Yangilash",
     "clear": "Tozalash",
     "noData": "Mavjud ma'lumotlar yo'q",
-    "actions": "Amallar"
+    "actions": "Amallar",
+    "close": "Yopish"
   },
   "enter_your_full_name_here": "To'liq ismingizni shu yerga kiriting",
   "enter_your_password_here": "Parolingizni shu yerga kiriting",
@@ -83,6 +84,18 @@
     "delete_employee": "Xodimni o'chirish",
     "employee_list": "Xodimlar ro'yxati",
     "no_employees_found": "Xodimlar topilmadi",
-    "createEmployee": "Xodim yaratish"
-  }
+    "createEmployee": "Xodim yaratish",
+    "createDescription": "Yangi xodimni yaratish uchun quyidagi ma'lumotlarni to'ldiring",
+    "create": "Yaratish",
+    "created": "Xodim muvaffaqiyatli yaratildi",
+    "fullName": "To'liq ism",
+    "enterFullName": "To'liq ismni kiriting",
+    "position": "Lavozim",
+    "enterPosition": "Lavozimni kiriting",
+    "department": "Bo'lim",
+    "enterDepartment": "Bo'limni kiriting",
+    "selectImage": "Rasm tanlang",
+    "view": "Xodimni ko'rish"
+  },
+  "total": "Jami"
 }

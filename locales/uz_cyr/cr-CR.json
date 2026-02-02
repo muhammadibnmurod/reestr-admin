@@ -30,7 +30,8 @@
     "clear": "Тозалаш",
     "noData": "Мавжуд маълумотлар йўқ",
     "document_categories": "Документ категорияси",
-    "actions": "Амаллар"
+    "actions": "Амаллар",
+    "close": "Ёпиш"
   },
   "validation": {
     "required": "Бу майдон мажбурий",
@@ -84,6 +85,18 @@
     "delete_employee": "Ходимни ўчириш",
     "employee_list": "Ходимлар рўйхати",
     "no_employees_found": "Ходимлар топилмади",
-    "createEmployee": "Ходим яратиш"
-  }
+    "createEmployee": "Ходим яратиш",
+    "createDescription": "Янги ходимни яратиш учун қуйидаги маълумотларни тўлдиринг",
+    "create": "Яратиш",
+    "created": "Ходим муваффақиятли яратилди",
+    "fullName": "Тўлиқ исм",
+    "enterFullName": "Тўлиқ исмни киритинг",
+    "position": "Лавозим",
+    "enterPosition": "Лавозимни киритинг",
+    "department": "Бўлим",
+    "enterDepartment": "Бўлимни киритинг",
+    "selectImage": "Расм танланг",
+    "view": "Ходимни кўриш"
+  },
+  "total": "Жами"
 }

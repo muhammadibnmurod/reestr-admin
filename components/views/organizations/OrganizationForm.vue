@@ -8,7 +8,6 @@
     :lock-scroll="true"
     class="modern-org-dialog"
   >
-    <!-- ✅ HEADER (qotadi) -->
     <template #header>
       <div class="dlg-header">
         <div class="dlg-icon">
@@ -19,18 +18,17 @@
 
         <div class="flex-1 pr-10">
           <h3
-            class="text-xl font-bold text-gray-900 dark:text-white leading-tight"
+            class="text-lg font-bold text-gray-900 dark:text-white leading-tight"
           >
             {{ headerTitle }}
           </h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <p class="text-[13px] text-gray-500 dark:text-gray-400 mt-1">
             {{ headerSubtitle }}
           </p>
         </div>
       </div>
     </template>
 
-    <!-- ✅ BODY (faqat shu joy scroll) -->
     <div class="dlg-body-scroll">
       <el-form
         ref="formRef"
@@ -40,58 +38,61 @@
         size="large"
         :disabled="isViewMode"
       >
-        <el-tabs v-model="activeTab" class="org-tabs">
-          <el-tab-pane label="O'zbekcha" name="uz">
-            <el-form-item label="Name (UZ)" prop="name.uz">
-              <el-input
-                v-model="form.name.uz"
-                placeholder="Nomini kiriting..."
-              />
-            </el-form-item>
-          </el-tab-pane>
+        <div class="card mb-6">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-ico-wrapper">
+                <el-icon class="card-ico"><OfficeBuilding /></el-icon>
+              </div>
+              <div>
+                <div class="ttl">Tashkilot nomi</div>
+                <div class="sub">Barcha tillarda kiriting</div>
+              </div>
+            </div>
 
-          <el-tab-pane label="English" name="en">
-            <el-form-item label="Name (EN)" prop="name.en">
-              <el-input v-model="form.name.en" placeholder="Enter name..." />
-            </el-form-item>
-          </el-tab-pane>
+            <el-tabs v-model="activeTab" class="lang-tabs" type="card">
+              <el-tab-pane label="O‘zb" name="uz" />
+              <el-tab-pane label="Eng" name="en" />
+              <el-tab-pane label="Рус" name="ru" />
+              <el-tab-pane label="Кир" name="krill" />
+            </el-tabs>
+          </div>
 
-          <el-tab-pane label="Русский" name="ru">
-            <el-form-item label="Name (RU)" prop="name.ru">
-              <el-input
-                v-model="form.name.ru"
-                placeholder="Введите название..."
-              />
-            </el-form-item>
-          </el-tab-pane>
+          <el-form-item :prop="`name.${activeTab}`" class="m-0">
+            <el-input
+              v-model="form.name[activeTab]"
+              :placeholder="activePlaceholder"
+              clearable
+              class="modern-inp"
+            />
+          </el-form-item>
+        </div>
 
-          <el-tab-pane label="Кирилл" name="krill">
-            <el-form-item label="Name (KRILL)" prop="name.krill">
-              <el-input
-                v-model="form.name.krill"
-                placeholder="Номини киритинг..."
-              />
-            </el-form-item>
-          </el-tab-pane>
-        </el-tabs>
+        <div class="card">
+          <div class="card-title mb-4">
+            <div class="card-ico-wrapper">
+              <el-icon class="card-ico"><Connection /></el-icon>
+            </div>
+            <div>
+              <div class="ttl">Yuqori tashkilot</div>
+              <div class="sub">Tashkilot iyerarxiyasini tanlang</div>
+            </div>
+          </div>
 
-        <div
-          class="pt-5 mt-4 border-t border-gray-200/70 dark:border-gray-700/70"
-        >
-          <el-form-item label="Parent Organization" prop="parentId">
+          <el-form-item prop="parentId" class="m-0">
             <el-select
               v-model="form.parentId"
-              placeholder="Parent organization tanlang"
+              placeholder="Yuqori tashkilotni tanlang"
               clearable
               filterable
-              class="w-full"
+              class="w-full modern-select"
               :disabled="isViewMode"
             >
               <el-option
                 v-for="org in parentOptions"
                 :key="org.id"
                 :value="org.id"
-                :label="useGetTranslation(org.name)"
+                :label="org.name?.[activeTab] || org.name?.uz"
               />
             </el-select>
           </el-form-item>
@@ -99,7 +100,6 @@
       </el-form>
     </div>
 
-    <!-- ✅ FOOTER (qotadi) -->
     <template #footer>
       <div class="dlg-footer">
         <el-button size="large" class="!px-6 !rounded-xl" @click="onCancel">
@@ -110,10 +110,11 @@
           v-if="!isViewMode"
           type="primary"
           size="large"
-          class="!px-8 !rounded-xl"
+          class="!px-10 !rounded-xl"
           :loading="loading"
           @click="onSubmit"
         >
+          <el-icon class="mr-1"><Check /></el-icon>
           Saqlash
         </el-button>
       </div>
@@ -125,7 +126,14 @@
 import { computed, reactive, ref, watch } from "vue";
 import api from "@/utils/axios";
 import { ElMessage } from "element-plus";
-import { Plus, Edit, View } from "@element-plus/icons-vue";
+import {
+  Plus,
+  Edit,
+  View,
+  OfficeBuilding,
+  Connection,
+  Check,
+} from "@element-plus/icons-vue";
 
 const props = defineProps<{
   open: boolean;
@@ -161,22 +169,30 @@ const headerIcon = computed(() =>
 );
 const headerTitle = computed(() =>
   isViewMode.value
-    ? "Organization ma'lumotlari"
+    ? "Tashkilot ma'lumotlari"
     : isEdit.value
-      ? "Tahrirlash"
-      : "Yangi Organization",
+      ? "Tashkilotni tahrirlash"
+      : "Yangi tashkilot",
 );
 const headerSubtitle = computed(() =>
   isViewMode.value
-    ? "Tashkilot haqida ma'lumot"
-    : isEdit.value
-      ? "Tashkilotni tahrirlash"
-      : "Yangi tashkilot qo‘shish",
+    ? "Iyerarxiya va nomlar ko'rinishi"
+    : "Tizim iyerarxiyasi uchun yangi tashkilot qo'shing",
 );
 
 const parentOptions = computed(() => {
   const selfId = props.editData?.id;
   return (props.organizations || []).filter((o: any) => o.id !== selfId);
+});
+
+const activePlaceholder = computed(() => {
+  const map = {
+    uz: "Tashkilot nomi...",
+    en: "Organization name...",
+    ru: "Название организации...",
+    krill: "Ташкилот номи...",
+  };
+  return map[activeTab.value];
 });
 
 const rules = {
@@ -200,7 +216,6 @@ watch(
       resetForm();
       return;
     }
-
     if (props.editData?.id) {
       Object.assign(form.name, {
         uz: props.editData?.name?.uz || "",
@@ -208,9 +223,7 @@ watch(
         ru: props.editData?.name?.ru || "",
         krill: props.editData?.name?.krill || "",
       });
-      form.parentId = props.editData?.parentId ?? null;
-    } else {
-      resetForm();
+      form.parentId = props.editData?.parentId || null;
     }
   },
   { immediate: true },
@@ -218,24 +231,19 @@ watch(
 
 const onSubmit = async () => {
   if (!formRef.value) return;
-
   try {
     await formRef.value.validate();
     loading.value = true;
-
     const payload = {
       name: { ...form.name },
       parentId: form.parentId ?? 0,
     };
-
     if (props.editData?.id)
       await api.put(`/organizations/${props.editData.id}`, payload);
     else await api.post("/organizations", payload);
-
     ElMessage.success("Muvaffaqiyatli saqlandi");
     emit("save");
     emit("update:open", false);
-    resetForm();
   } catch (e: any) {
     ElMessage.error(e?.response?.data?.message || "Xatolik yuz berdi");
   } finally {
@@ -245,82 +253,93 @@ const onSubmit = async () => {
 
 const onCancel = () => {
   emit("update:open", false);
-  resetForm();
 };
 </script>
 
 <style scoped>
 .modern-org-dialog :deep(.el-dialog) {
   @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden;
-  max-height: 80vh;
+  max-height: 85vh;
   display: flex;
   flex-direction: column;
 }
-/* 
-.modern-org-dialog :deep(.el-dialog) {
-  @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden ;
-  height: 30vh; 
-  max-height: 30vh;
-  display: flex;
-  flex-direction: column;
-}
-.modern-org-dialog :deep(.el-dialog__headerbtn) {
-  top: 17px;
-  right: 16px;
-}
-
-.modern-org-dialog :deep(.el-dialog__header),
-.modern-org-dialog :deep(.el-dialog__footer) {
-  @apply !p-0;
-  flex-shrink: 0;
-}
-
-.modern-org-dialog :deep(.el-dialog__body) {
-  @apply !p-0;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-} */
 
 .dlg-header {
-  @apply flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700
-         bg-white dark:bg-gray-900;
+  @apply flex items-center gap-4 px-6 py-5 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900;
 }
+
 .dlg-icon {
-  @apply w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600
-         flex items-center justify-center shadow-lg;
+  @apply w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-200 dark:shadow-none;
 }
 
 .dlg-body-scroll {
-  @apply px-6 py-6;
+  @apply px-6 py-8;
   flex: 1;
-  min-height: 0;
   overflow-y: auto;
-  overflow-x: hidden;
 }
 
-.org-tabs :deep(.el-tabs__header) {
-  @apply mb-4;
+/* Card Style */
+.card {
+  @apply rounded-2xl border border-gray-100 dark:border-gray-800 
+         bg-gray-50/50 dark:bg-gray-800/30 p-5 transition-all;
+}
+
+.card-head {
+  @apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5;
+}
+
+.card-title {
+  @apply flex items-center gap-3;
+}
+
+.card-ico-wrapper {
+  @apply w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center 
+         shadow-sm border border-gray-100 dark:border-gray-700;
+}
+
+.card-ico {
+  @apply text-blue-600 dark:text-blue-400 text-lg;
+}
+
+.ttl {
+  @apply text-[15px] font-bold text-gray-900 dark:text-white leading-none;
+}
+
+.sub {
+  @apply text-[11px] text-gray-500 dark:text-gray-400 mt-1;
+}
+
+/* Segmented Tabs */
+.lang-tabs :deep(.el-tabs__header) {
+  @apply m-0 border-none;
+}
+.lang-tabs :deep(.el-tabs__nav) {
+  @apply border-none bg-gray-200/50 dark:bg-gray-900 rounded-xl p-1;
+}
+.lang-tabs :deep(.el-tabs__item) {
+  @apply !h-7 !leading-7 text-[11px] font-bold rounded-lg px-3 border-none transition-all;
+  @apply text-gray-500 dark:text-gray-400;
+}
+.lang-tabs :deep(.el-tabs__item.is-active) {
+  @apply bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm;
+}
+
+/* Inputs & Selects */
+.modern-inp :deep(.el-input__wrapper),
+.modern-select :deep(.el-select__wrapper) {
+  @apply !rounded-xl !shadow-none bg-white dark:bg-gray-900
+         border border-gray-200 dark:border-gray-700 h-12 px-4;
+}
+.modern-inp :deep(.el-input__wrapper.is-focus),
+.modern-select :deep(.el-select__wrapper.is-focused) {
+  @apply border-blue-500 ring-4 ring-blue-500/10 !shadow-none;
 }
 
 .dlg-footer {
-  @apply flex items-center justify-end gap-3 px-6 py-6
-         border-t border-gray-200 dark:border-gray-700
-         bg-gray-50 dark:bg-gray-800/50;
+  @apply flex items-center justify-end gap-3 px-6 py-5 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/20;
 }
 
-:deep(.el-form-item__label) {
-  @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
-}
-:deep(.el-input__wrapper),
-:deep(.el-select__wrapper) {
-  @apply shadow-sm bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
-  @apply hover:border-blue-400 focus-within:border-blue-500 transition-all duration-200;
-}
-:deep(.el-input__wrapper.is-focus),
-:deep(.el-select__wrapper.is-focus) {
-  @apply shadow-md ring-2 ring-blue-100 dark:ring-blue-900/50;
+.m-0 {
+  margin-bottom: 0 !important;
 }
 </style>

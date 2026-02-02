@@ -4,12 +4,12 @@
   >
     <UsersForm
       v-model:open="formDialog"
-      :isEditMode="isEditMode"
+      :isViewMode="mode === 'view'"
+      :isEditMode="mode === 'edit'"
       :editData="editData"
       @save="fetchUsers"
     />
 
-    <!-- Sticky header + filter -->
     <div
       class="sticky top-0 z-20 border-b border-gray-200/60 dark:border-gray-700/60 bg-gray-50/80 dark:bg-[#1e222b] backdrop-blur"
     >
@@ -29,7 +29,7 @@
           <el-button
             :icon="ElIconPlus"
             type="primary"
-            @click="openFormDialog()"
+            @click="openCreate"
             class="!px-5 !py-2 !rounded-xl shadow-md"
           >
             {{ $t("common.add") }}
@@ -40,23 +40,21 @@
           v-model="filterParams"
           :loading="loading"
           @refresh="fetchUsers"
-          @openForm="openFormDialog()"
         />
       </div>
     </div>
 
-    <!-- Content (flex-1 so list height stable) -->
     <div class="p-6 pt-4 flex-1 min-h-0">
-      <div class="... h-full">
+      <div class="h-full">
         <UsersList
           :data="paginatedUsers"
           :loading="loading"
           :page="filterParams.currentPage"
           :size="filterParams.pagSize"
           :total="filteredUsers.length"
-          @view="openFormDialog"
+          @view="openView"
           @delete="onDelete"
-          @edit="openFormDialog"
+          @edit="openEdit"
           @page-change="handlePageChange"
           @size-change="handleSizeChange"
         />
@@ -66,16 +64,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref, reactive, computed, onMounted, watch } from "vue";
 import api from "@/utils/axios";
 import { Plus as ElIconPlus } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 const users = ref<any[]>([]);
 const loading = ref(false);
-
 const formDialog = ref(false);
-const isEditMode = ref(false);
 const editData = ref<any>(null);
+const mode = ref<"view" | "edit" | "create">("create");
 
 const filterParams = reactive({
   currentPage: 1,
@@ -95,9 +93,21 @@ const fetchUsers = async () => {
   }
 };
 
-const openFormDialog = (editDataParam: any = null) => {
-  isEditMode.value = !!editDataParam;
-  editData.value = editDataParam;
+const openCreate = () => {
+  mode.value = "create";
+  editData.value = null;
+  formDialog.value = true;
+};
+
+const openEdit = (row: any) => {
+  mode.value = "edit";
+  editData.value = row;
+  formDialog.value = true;
+};
+
+const openView = (row: any) => {
+  mode.value = "view";
+  editData.value = row;
   formDialog.value = true;
 };
 
@@ -106,63 +116,37 @@ const onDelete = async (row: any) => {
     await ElMessageBox.confirm(
       `${row.fullName || row.username} foydalanuvchisini o‘chirmoqchimisiz?`,
       "Tasdiqlash",
-      {
-        confirmButtonText: "Ha, o‘chirish",
-        cancelButtonText: "Bekor qilish",
-        type: "warning",
-        // modal doim yuqorida turishi uchun:
-        appendTo: document.body,
-        // ixtiyoriy:
-        closeOnClickModal: false,
-        closeOnPressEscape: true,
-      },
+      { confirmButtonText: "Ha", cancelButtonText: "Yo'q", type: "warning" },
     );
-
-    const id = row.id; // yoki row._id / row.uuid
-    await api.delete(`/user/${id}`);
-    ElMessage.success("User deleted successfully.");
+    await api.delete(`/user/${row.id}`);
+    ElMessage.success("Muvaffaqiyatli o'chirildi");
     fetchUsers();
-  } catch (err: any) {
-    // cancel bo‘lsa shu yerga tushadi (xato deb ko‘rsatmaymiz)
-    if (err === "cancel" || err === "close") return;
-    ElMessage.error("Failed to delete user.");
+  } catch (err) {
+    if (err !== "cancel") ElMessage.error("Xatolik yuz berdi");
   }
-};
-
-const handleSizeChange = (newSize: number) => {
-  filterParams.pagSize = newSize;
-  filterParams.currentPage = 1;
-};
-
-const handlePageChange = (newPage: number) => {
-  filterParams.currentPage = newPage;
 };
 
 const filteredUsers = computed(() => {
   const q = (filterParams.search || "").toLowerCase().trim();
   if (!q) return users.value;
   return users.value.filter(
-    (u: any) =>
+    (u) =>
       (u.fullName || "").toLowerCase().includes(q) ||
       (u.username || "").toLowerCase().includes(q),
   );
 });
 
 const paginatedUsers = computed(() => {
-  const startIndex = (filterParams.currentPage - 1) * filterParams.pagSize;
-  return filteredUsers.value.slice(
-    startIndex,
-    startIndex + filterParams.pagSize,
-  );
+  const start = (filterParams.currentPage - 1) * filterParams.pagSize;
+  return filteredUsers.value.slice(start, start + filterParams.pagSize);
 });
 
-watch(
-  () => [filterParams.currentPage, filterParams.pagSize, filterParams.search],
-  () => {
-    // search bo'lsa page 1ga qaytarish
-    if (filterParams.search) filterParams.currentPage = 1;
-  },
-);
+const handlePageChange = (p: number) => (filterParams.currentPage = p);
+const handleSizeChange = (s: number) => {
+  filterParams.pagSize = s;
+  filterParams.currentPage = 1;
+};
 
 onMounted(fetchUsers);
 </script>
+s

@@ -10,7 +10,10 @@
         :empty-text="$t('common.noData')"
         height="100%"
         header-cell-class-name="bg-gray-50 dark:bg-[#0f172a] text-gray-600 dark:text-gray-300 font-semibold"
-        :row-class-name="() => 'hover:bg-gray-50/60 dark:hover:bg-gray-700/40 transition-colors'"
+        :row-class-name="
+          () =>
+            'hover:bg-gray-50/60 dark:hover:bg-gray-700/40 transition-colors'
+        "
       >
         <el-table-column type="index" width="60" label="#" />
 
@@ -53,8 +56,7 @@
         <el-table-column prop="positionUz" label="Lavozim" min-width="180">
           <template #default="{ row }">
             <span
-              class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
-                     bg-slate-500/10 text-slate-600 dark:bg-white/10 dark:text-slate-200"
+              class="inline-flex items-center rounded-full px-3 py-1 text-xs font-medium bg-slate-500/10 text-slate-600 dark:bg-white/10 dark:text-slate-200"
             >
               {{ row.positionUz || "-" }}
             </span>
@@ -68,7 +70,7 @@
             </div>
           </template>
         </el-table-column>
-<!-- 
+        <!-- 
         <el-table-column label="Manager ID" width="120" align="center">
           <template #default="{ row }">
             <span
@@ -82,17 +84,30 @@
           </template>
         </el-table-column> -->
 
-        <el-table-column label="Amallar" width="170" fixed="right" align="center">
+        <el-table-column
+          label="Amallar"
+          width="170"
+          fixed="right"
+          align="center"
+        >
           <template #default="{ row }">
             <div class="flex items-center justify-center gap-2">
               <el-tooltip content="Ko‘rish" placement="top">
-                <button type="button" class="action-btn action-view" @click="$emit('view', row)">
+                <button
+                  type="button"
+                  class="action-btn action-view"
+                  @click="$emit('view', row)"
+                >
                   <el-icon :size="16"><View /></el-icon>
                 </button>
               </el-tooltip>
 
               <el-tooltip content="Tahrirlash" placement="top">
-                <button type="button" class="action-btn action-edit" @click="$emit('edit', row)">
+                <button
+                  type="button"
+                  class="action-btn action-edit"
+                  @click="$emit('edit', row)"
+                >
                   <el-icon :size="16"><Edit /></el-icon>
                 </button>
               </el-tooltip>
@@ -101,14 +116,13 @@
                 title="Ushbu xodimni o‘chirmoqchimisiz?"
                 confirm-button-text="Ha"
                 cancel-button-text="Yo‘q"
+                :teleported="true"
                 @confirm="$emit('delete', row.id)"
               >
                 <template #reference>
-                  <el-tooltip content="O‘chirish" placement="top">
-                    <button type="button" class="action-btn action-delete">
-                      <el-icon :size="16"><Delete /></el-icon>
-                    </button>
-                  </el-tooltip>
+                  <button type="button" class="action-btn action-delete">
+                    <el-icon :size="16"><Delete /></el-icon>
+                  </button>
                 </template>
               </el-popconfirm>
             </div>
@@ -128,7 +142,11 @@
     <!-- FOOTER (pagination qotib turadi) -->
     <div class="list-footer">
       <div class="text-sm text-gray-600 dark:text-gray-400">
-        Jami: <span class="font-semibold text-gray-800 dark:text-gray-200">{{ total }}</span> ta yozuv
+        {{ $t("total") }}:
+        <span class="font-semibold text-gray-800 dark:text-gray-200">{{
+          total
+        }}</span>
+        ta yozuv
       </div>
 
       <el-pagination
@@ -181,7 +199,11 @@ const getImageUrl = (imagePath: string) => {
 const formatDate = (dateString: string) => {
   if (!dateString) return "-";
   const date = new Date(dateString);
-  return date.toLocaleDateString("uz-UZ", { year: "numeric", month: "2-digit", day: "2-digit" });
+  return date.toLocaleDateString("uz-UZ", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
 };
 </script>
 

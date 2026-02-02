@@ -6,7 +6,7 @@
       <span
         class="text-sm font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700"
       >
-        Jami:
+        {{ $t("total") }}:
         <span class="font-bold text-slate-900 dark:text-white ml-1">
           {{ total }}
         </span>

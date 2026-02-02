@@ -14,7 +14,7 @@
     </el-input>
 
     <div class="text-sm text-gray-600 dark:text-gray-400">
-      Jami: <span class="font-semibold text-gray-900 dark:text-gray-200">{{ total }}</span>
+      {{ $t("total") }}: <span class="font-semibold text-gray-900 dark:text-gray-200">{{ total }}</span>
     </div>
   </div>
 </template>

@@ -4,137 +4,142 @@
     width="860px"
     destroy-on-close
     append-to-body
-    class="module-dialog"
+    class="module-dialog-fixed"
     :close-on-click-modal="true"
   >
     <template #header>
-      <div
-        class="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900"
-      >
-        <div
-          class="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg"
-        >
-          <el-icon :size="18" class="text-white">
+      <div class="dlg-header">
+        <div class="dlg-icon">
+          <el-icon :size="20" class="text-white">
             <component :is="editData?.id ? Edit : Plus" />
           </el-icon>
         </div>
         <div class="flex-1">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">
-            {{ editData?.id ? "Modulni tahrirlash" : "Yangi modul" }}
+          <h3
+            class="text-xl font-bold text-gray-900 dark:text-white leading-tight"
+          >
+            {{ editData?.id ? "Modulni tahrirlash" : "Yangi modul qo'shish" }}
           </h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            Modul nomi, tavsifi, muddat va rangini kiriting
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Modul nomi, tavsifi, muddati va rangini belgilang
           </p>
         </div>
       </div>
     </template>
 
-    <!-- BODY (faqat shu joy scroll) -->
     <div class="dlg-body-scroll">
       <el-form ref="formRef" :model="form" :rules="rules" label-position="top">
-        <el-tabs v-model="tab" class="mb-4">
-          <el-tab-pane label="O'zbekcha" name="uz">
-            <el-form-item label="Name (UZ) *" prop="nameUz">
+        <div class="card mb-6">
+          <div class="card-head">
+            <div class="card-title">
+              <div class="card-ico-wrapper">
+                <el-icon class="card-ico"><Collection /></el-icon>
+              </div>
+              <div>
+                <div class="ttl">Modul ma'lumotlari</div>
+                <div class="sub">Turli tillarda nom va tavsif</div>
+              </div>
+            </div>
+
+            <el-tabs v-model="tab" class="lang-tabs" type="card">
+              <el-tab-pane label="O‘zb" name="uz" />
+              <el-tab-pane label="Eng" name="en" />
+              <el-tab-pane label="Рус" name="ru" />
+              <el-tab-pane label="Кир" name="kr" />
+            </el-tabs>
+          </div>
+
+          <div class="space-y-4">
+            <el-form-item :label="activeNameLabel" :prop="activeNameProp">
               <el-input
-                v-model="form.nameUz"
-                placeholder="Masalan: Auth modul"
+                v-model="form[activeNameProp]"
+                :placeholder="activeNamePlaceholder"
+                clearable
+                class="modern-inp"
               />
             </el-form-item>
-            <el-form-item label="Description (UZ) *" prop="descriptionUz">
+
+            <el-form-item :label="activeDescLabel" :prop="activeDescProp">
               <el-input
-                v-model="form.descriptionUz"
+                v-model="form[activeDescProp]"
                 type="textarea"
                 :rows="3"
-                placeholder="Modul tavsifi..."
+                :placeholder="activeDescPlaceholder"
+                class="modern-textarea"
               />
             </el-form-item>
-          </el-tab-pane>
-
-          <el-tab-pane label="English" name="en">
-            <el-form-item label="Name (EN)" prop="nameEn">
-              <el-input v-model="form.nameEn" placeholder="Module name..." />
-            </el-form-item>
-            <el-form-item label="Description (EN)" prop="descriptionEn">
-              <el-input
-                v-model="form.descriptionEn"
-                type="textarea"
-                :rows="3"
-              />
-            </el-form-item>
-          </el-tab-pane>
-
-          <el-tab-pane label="Русский" name="ru">
-            <el-form-item label="Name (RU)" prop="nameRu">
-              <el-input v-model="form.nameRu" placeholder="Название..." />
-            </el-form-item>
-            <el-form-item label="Description (RU)" prop="descriptionRu">
-              <el-input
-                v-model="form.descriptionRu"
-                type="textarea"
-                :rows="3"
-              />
-            </el-form-item>
-          </el-tab-pane>
-
-          <el-tab-pane label="Кирилл" name="kr">
-            <el-form-item label="Name (Kiril)" prop="nameKiril">
-              <el-input v-model="form.nameKiril" placeholder="Номи..." />
-            </el-form-item>
-            <el-form-item label="Description (Kiril)" prop="descriptionKiril">
-              <el-input
-                v-model="form.descriptionKiril"
-                type="textarea"
-                :rows="3"
-              />
-            </el-form-item>
-          </el-tab-pane>
-        </el-tabs>
-
-        <div
-          class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-gray-200/70 dark:border-gray-700/70 pt-4"
-        >
-          <el-form-item label="Start date" prop="startDate">
-            <el-date-picker
-              v-model="form.startDate"
-              type="date"
-              value-format="YYYY-MM-DD"
-              placeholder="Boshlanish"
-              class="w-full"
-            />
-          </el-form-item>
-
-          <el-form-item label="End date" prop="endDate">
-            <el-date-picker
-              v-model="form.endDate"
-              type="date"
-              value-format="YYYY-MM-DD"
-              placeholder="Tugash"
-              class="w-full"
-            />
-          </el-form-item>
+          </div>
         </div>
 
-        <el-form-item label="Color" prop="color" class="mt-2">
-          <PresentationColorPicker v-model="form.color" />
-        </el-form-item>
+        <div class="flex flex-col gap-6">
+          <div class="card">
+            <div class="card-title mb-5">
+              <div class="card-ico-wrapper">
+                <el-icon class="card-ico"><Calendar /></el-icon>
+              </div>
+              <div>
+                <div class="ttl">Muddatlar</div>
+                <div class="sub">Boshlanish va tugash sanasi</div>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <el-form-item label="Start date" prop="startDate" class="m-0">
+                <el-date-picker
+                  v-model="form.startDate"
+                  type="date"
+                  value-format="YYYY-MM-DD"
+                  placeholder="Sana"
+                  class="!w-full modern-date"
+                />
+              </el-form-item>
+              <el-form-item label="End date" prop="endDate" class="m-0">
+                <el-date-picker
+                  v-model="form.endDate"
+                  type="date"
+                  value-format="YYYY-MM-DD"
+                  placeholder="Sana"
+                  class="!w-full modern-date"
+                />
+              </el-form-item>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title mb-5">
+              <div class="card-ico-wrapper">
+                <el-icon class="card-ico"><Brush /></el-icon>
+              </div>
+              <div>
+                <div class="ttl">Vizual identifikatsiya</div>
+                <div class="sub">Modul uchun rang tanlang</div>
+              </div>
+            </div>
+            <el-form-item prop="color" class="m-0">
+              <PresentationColorPicker v-model="form.color" />
+            </el-form-item>
+          </div>
+        </div>
       </el-form>
     </div>
 
-    <!-- FOOTER (qotadi) -->
     <template #footer>
-      <div
-        class="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50"
-      >
-        <el-button class="!rounded-xl" size="large" @click="openModel = false">
+      <div class="dlg-footer">
+        <el-button
+          class="!rounded-xl !px-8"
+          size="large"
+          @click="openModel = false"
+        >
           Bekor qilish
         </el-button>
         <el-button
           type="primary"
-          class="!rounded-xl !px-8"
+          class="!rounded-xl !px-12 shadow-lg"
           size="large"
           :loading="saving"
           @click="submit"
         >
+          <el-icon class="mr-1"><Check /></el-icon>
           Saqlash
         </el-button>
       </div>
@@ -146,7 +151,14 @@
 import { computed, reactive, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
 import type { FormInstance } from "element-plus";
-import { Plus, Edit } from "@element-plus/icons-vue";
+import {
+  Plus,
+  Edit,
+  Collection,
+  Calendar,
+  Brush,
+  Check,
+} from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 
 const props = defineProps<{
@@ -169,7 +181,7 @@ const formRef = ref<FormInstance>();
 const saving = ref(false);
 const tab = ref<"uz" | "en" | "ru" | "kr">("uz");
 
-const form = reactive({
+const form = reactive<any>({
   nameUz: "",
   nameRu: "",
   nameEn: "",
@@ -183,6 +195,45 @@ const form = reactive({
   color: "yellow",
 });
 
+// --- Dinamik prop va label mantiqlari ---
+const activeNameProp = computed(() => {
+  const map: any = {
+    uz: "nameUz",
+    en: "nameEn",
+    ru: "nameRu",
+    kr: "nameKiril",
+  };
+  return map[tab.value];
+});
+const activeDescProp = computed(() => {
+  const map: any = {
+    uz: "descriptionUz",
+    en: "descriptionEn",
+    ru: "descriptionRu",
+    kr: "descriptionKiril",
+  };
+  return map[tab.value];
+});
+
+const activeNameLabel = computed(
+  () => `Modul nomi (${tab.value.toUpperCase()})`,
+);
+const activeDescLabel = computed(() => `Tavsif (${tab.value.toUpperCase()})`);
+
+const activeNamePlaceholder = computed(
+  () =>
+    ({
+      uz: "Masalan: Auth modul",
+      en: "e.g. Auth module",
+      ru: "Например: Модуль авторизации",
+      kr: "Масалан: Аутх модул",
+    })[tab.value],
+);
+
+const activeDescPlaceholder = computed(
+  () => "Modul haqida qisqacha ma'lumot...",
+);
+
 const rules = {
   nameUz: [{ required: true, message: "Majburiy", trigger: "blur" }],
   descriptionUz: [{ required: true, message: "Majburiy", trigger: "blur" }],
@@ -192,17 +243,9 @@ const rules = {
 };
 
 const reset = () => {
-  form.nameUz = "";
-  form.nameRu = "";
-  form.nameEn = "";
-  form.nameKiril = "";
-  form.descriptionUz = "";
-  form.descriptionRu = "";
-  form.descriptionEn = "";
-  form.descriptionKiril = "";
-  form.startDate = "";
-  form.endDate = "";
-  form.color = "yellow";
+  Object.keys(form).forEach(
+    (key) => (form[key] = key === "color" ? "yellow" : ""),
+  );
   tab.value = "uz";
   formRef.value?.clearValidate();
 };
@@ -211,46 +254,22 @@ watch(
   () => props.open,
   (v) => {
     if (!v) return;
-
-    if (props.editData?.id) {
-      const d = props.editData;
-      form.nameUz = d.nameUz || "";
-      form.nameRu = d.nameRu || "";
-      form.nameEn = d.nameEn || "";
-      form.nameKiril = d.nameKiril || "";
-      form.descriptionUz = d.descriptionUz || "";
-      form.descriptionRu = d.descriptionRu || "";
-      form.descriptionEn = d.descriptionEn || "";
-      form.descriptionKiril = d.descriptionKiril || "";
-      form.startDate = d.startDate || "";
-      form.endDate = d.endDate || "";
-      form.color = d.color || "yellow";
-    } else {
-      reset();
-    }
+    if (props.editData?.id) Object.assign(form, props.editData);
+    else reset();
   },
 );
 
 const submit = async () => {
   if (!formRef.value) return;
-
   try {
     await formRef.value.validate();
     saving.value = true;
-
     const payload = { projectId: props.projectId, ...form };
-
-    if (props.editData?.id) {
+    if (props.editData?.id)
       await api.put(`/module/${props.editData.id}`, payload);
-      ElMessage.success("Modul yangilandi");
-    } else {
-      await api.post("/module", payload);
-      ElMessage.success("Modul yaratildi");
-    }
-
+    else await api.post("/module", payload);
     emit("saved");
     openModel.value = false;
-    reset();
   } catch (e: any) {
     ElMessage.error(e?.response?.data?.message || "Xatolik yuz berdi");
   } finally {
@@ -260,43 +279,103 @@ const submit = async () => {
 </script>
 
 <style scoped>
-.module-dialog :deep(.el-dialog) {
-  @apply !rounded-2xl overflow-hidden bg-white dark:bg-gray-900;
-  max-height: 85vh; 
+.module-dialog-fixed :deep(.el-dialog) {
+  @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   margin: auto !important;
 }
 
-.module-dialog :deep(.el-dialog__header),
-.module-dialog :deep(.el-dialog__footer) {
+.module-dialog-fixed :deep(.el-dialog__header),
+.module-dialog-fixed :deep(.el-dialog__footer) {
   @apply !p-0;
   flex-shrink: 0;
 }
 
-.module-dialog :deep(.el-dialog__body) {
+.module-dialog-fixed :deep(.el-dialog__body) {
   @apply !p-0;
   flex: 1;
-  min-height: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
+.dlg-header {
+  @apply flex items-center gap-4 px-8 py-6 border-b border-gray-100 dark:border-gray-800;
+}
+
+.dlg-icon {
+  @apply w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg;
+}
+
 .dlg-body-scroll {
-  @apply px-6 py-5;
+  @apply px-10 py-8;
   flex: 1;
-  min-height: 0;
   overflow-y: auto;
-  overflow-x: hidden;
+}
+
+/* Card Style */
+.card {
+  @apply rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 p-5;
+}
+.card-head {
+  @apply flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-5;
+}
+.card-title {
+  @apply flex items-center gap-3;
+}
+.card-ico-wrapper {
+  @apply w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700;
+}
+.card-ico {
+  @apply text-blue-600 dark:text-blue-400 text-lg;
+}
+.ttl {
+  @apply text-sm font-bold text-gray-900 dark:text-white leading-none;
+}
+.sub {
+  @apply text-[11px] text-gray-500 dark:text-gray-400 mt-1;
+}
+
+/* Tabs */
+.lang-tabs :deep(.el-tabs__header) {
+  @apply m-0 border-none;
+}
+.lang-tabs :deep(.el-tabs__nav) {
+  @apply border-none bg-gray-200/50 dark:bg-gray-900 rounded-xl p-1;
+}
+.lang-tabs :deep(.el-tabs__item) {
+  @apply !h-7 !leading-7 text-[11px] font-bold rounded-lg px-3 border-none transition-all text-gray-500;
+}
+.lang-tabs :deep(.el-tabs__item.is-active) {
+  @apply bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm;
+}
+
+/* Input Dizayni (1ga 1) */
+.modern-inp :deep(.el-input__wrapper),
+.modern-date :deep(.el-input__wrapper),
+.modern-textarea :deep(.el-textarea__inner) {
+  @apply !rounded-xl !shadow-none bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 h-12 px-4 transition-all;
+}
+.modern-textarea :deep(.el-textarea__inner) {
+  @apply py-3 h-auto;
+}
+
+.modern-inp :deep(.el-input__wrapper.is-focus),
+.modern-date :deep(.el-input__wrapper.is-focus),
+.modern-textarea :deep(.el-textarea__inner:focus) {
+  @apply border-blue-500 ring-4 ring-blue-500/10;
 }
 
 :deep(.el-form-item__label) {
-  @apply text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2;
+  @apply text-sm font-bold text-gray-900 dark:text-white leading-none mb-2 ml-1;
 }
-:deep(.el-input__wrapper),
-:deep(.el-textarea__inner),
-:deep(.el-date-editor) {
-  @apply !rounded-xl;
+
+.dlg-footer {
+  @apply flex items-center justify-end gap-4 px-8 py-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20;
+}
+.m-0 {
+  margin-bottom: 0 !important;
 }
 </style>

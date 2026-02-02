@@ -29,7 +29,8 @@
     "create": "Создать",
     "clear": "Очистить",
     "noData": "Нет доступных данных",
-    "actions": "Действия"
+    "actions": "Действия",
+    "close": "Закрыть"
   },
   "validation": {
     "required": "Это поле обязательно",
@@ -83,6 +84,18 @@
     "delete_employee": "Удалить сотрудника",
     "employee_list": "Список сотрудников",
     "no_employees_found": "Сотрудников не найдено",
-    "createEmployee": "Создать сотрудника"
-  } 
+    "createEmployee": "Создать сотрудника",
+    "createDescription": "Заполните поля ниже, чтобы создать нового сотрудника",
+    "create": "Создать",
+    "created": "Сотрудник успешно создан",
+    "fullName": "Полное имя",
+    "enterFullName": "Введите полное имя",
+    "position": "Должность",
+    "enterPosition": "Введите должность",
+    "department": "Отдел",
+    "enterDepartment": "Введите отдел",
+    "selectImage": "Выбрать изображение",
+    "view": "Просмотреть сотрудника"
+  },
+  "total": "Всего"
 }

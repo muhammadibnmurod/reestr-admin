@@ -143,15 +143,6 @@ const viewEmployee = (employee: any) => {
 
 const confirmDelete = async (id: number) => {
   try {
-    await ElMessageBox.confirm(
-      "Ushbu xodimni o‘chirmoqchimisiz?",
-      "Ogohlantirish",
-      {
-        confirmButtonText: "Ha",
-        cancelButtonText: "Bekor qilish",
-        type: "warning",
-      },
-    );
 
     await api.delete(`/employee/${id}`);
     ElMessage.success("Xodim muvaffaqiyatli o‘chirildi");

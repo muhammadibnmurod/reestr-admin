@@ -28,7 +28,8 @@
     "search": "Search",
     "create": "Create",
     "noData": "No data available",
-    "actions": "Actions"
+    "actions": "Actions",
+    "close": "Close"
   },
   "validation": {
     "required": "This field is required",
@@ -66,7 +67,7 @@
     "required": "This field is required",
     "fileTooLarge": "File size must not exceed 5MB",
     "userCreated": "User has been created successfully",
-    "userUpdated": "User has been updated successfully",
+    "userUpdated": "User has been updated successfully",  
     "imageUploaded": "Image has been uploaded successfully",
     "createSuccess": "Successfully created",
     "updateSuccess": "Successfully updated"
@@ -92,6 +93,8 @@
     "enterPosition": "Enter position",
     "department": "Department",
     "enterDepartment": "Enter department",
-    "selectImage": "Select Image"
-  }
+    "selectImage": "Select Image",
+    "view": "View Employee"
+  },
+  "total": "Total"
 }

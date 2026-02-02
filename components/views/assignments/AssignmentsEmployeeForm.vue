@@ -1,107 +1,132 @@
 <template>
   <el-dialog
     v-model="openModel"
-    :width="dialogWidth"
+    width="1000px"
     destroy-on-close
     append-to-body
-    class="assign-emp-dialog"
+    class="assign-emp-dialog-fixed"
     :close-on-click-modal="true"
   >
     <template #header>
       <div class="dlg-header">
         <div class="dlg-icon">
-          <el-icon :size="18" class="text-white"><UserFilled /></el-icon>
+          <el-icon :size="20" class="text-white"><UserFilled /></el-icon>
         </div>
         <div class="flex-1">
-          <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+          <h3
+            class="text-xl font-bold text-gray-900 dark:text-white leading-tight"
+          >
             Xodim qo‘shish
           </h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
-            Xodim tanlang va loyihaga biriktiring
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            Loyiha jamoasini shakllantirish uchun xodimlarni tanlang
           </p>
         </div>
       </div>
     </template>
 
-    <!-- BODY: header/footer qotadi, body scroll -->
-    <div class="dlg-body">
-      <!-- Search -->
-      <div class="flex items-center gap-2 mb-4">
-        <el-input
-          v-model="q"
-          clearable
-          placeholder="Qidirish... (F.I.O)"
-          class="w-full"
-          @keyup.enter="onSearch"
-          @clear="onClear"
-        >
-          <template #prefix>
-            <el-icon><Search /></el-icon>
-          </template>
-        </el-input>
+    <div class="dlg-body-scroll">
+      <div class="card mb-6">
+        <div class="flex items-center gap-4">
+          <el-input
+            v-model="q"
+            clearable
+            placeholder="Xodim ismini kiriting (F.I.O)..."
+            class="modern-inp flex-1"
+            @keyup.enter="onSearch"
+            @clear="onClear"
+          >
+            <template #prefix>
+              <el-icon class="text-gray-400"><Search /></el-icon>
+            </template>
+          </el-input>
 
-        <el-button type="primary" class="!rounded-xl" :loading="loading" @click="onSearch">
-          Qidirish
-        </el-button>
+          <el-button
+            type="primary"
+            size="large"
+            class="!rounded-xl !px-8 shadow-md"
+            :loading="loading"
+            @click="onSearch"
+          >
+            Qidirish
+          </el-button>
+        </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
-        <!-- LEFT: List -->
-        <div class="lg:col-span-3 rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden bg-white dark:bg-[#1e222b]">
+      <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div class="lg:col-span-3 card !p-0 overflow-hidden flex flex-col">
+          <div
+            class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50"
+          >
+            <span
+              class="text-xs font-bold text-gray-500 uppercase tracking-wider"
+              >Xodimlar ro'yxati</span
+            >
+          </div>
+
           <el-table
             :data="rows"
             v-loading="loading"
             row-key="id"
-            stripe
-            class="w-full"
-            header-cell-class-name="tbl-head"
+            class="modern-table"
             :row-class-name="rowClass"
-            height="420"
+            height="400"
           >
-            <el-table-column type="index" label="#" width="60" />
-
-            <el-table-column label="Xodim" min-width="320">
+            <el-table-column label="Xodim" min-width="280">
               <template #default="{ row }">
-                <div class="flex items-center gap-3">
-                  <el-image
+                <div class="flex items-center gap-3 py-1">
+                  <el-avatar
+                    :size="38"
                     :src="getImageUrl(row.image)"
-                    :preview-src-list="[getImageUrl(row.image)]"
-                    fit="cover"
-                    class="w-10 h-10 rounded-full border border-gray-200 dark:border-gray-700 overflow-hidden"
-                    preview-teleported
+                    class="shadow-sm border border-gray-100 dark:border-gray-700"
                   >
-                    <template #error>
-                      <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-xs font-bold text-gray-500">
-                        U
-                      </div>
-                    </template>
-                  </el-image>
+                    {{ (row.fullNameUz || "U").charAt(0) }}
+                  </el-avatar>
 
                   <div class="min-w-0">
-                    <div class="font-semibold text-gray-900 dark:text-white truncate">
+                    <div
+                      class="font-bold text-[13px] text-gray-900 dark:text-white truncate"
+                    >
                       {{ row.fullNameUz || row.fullnameuz || "-" }}
                     </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
+                    <div
+                      class="text-[11px] text-gray-500 dark:text-gray-400 truncate mt-0.5"
+                    >
                       {{ row.positionUz || row.positionuz || "-" }}
                     </div>
                   </div>
-
-                  <span
-                    v-if="isAssigned(row.id)"
-                    class="ml-auto text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-white/10 text-gray-600 dark:text-gray-300"
-                  >
-                    Biriktirilgan
-                  </span>
                 </div>
               </template>
             </el-table-column>
 
-            <el-table-column label="Tanlash" width="120" align="center" fixed="right">
+            <el-table-column label="Holat" width="120" align="center">
+              <template #default="{ row }">
+                <span
+                  v-if="isAssigned(row.id)"
+                  class="text-[10px] font-bold px-2 py-1 rounded-md bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 uppercase"
+                >
+                  Biriktirilgan
+                </span>
+                <span
+                  v-else
+                  class="text-[10px] font-bold px-2 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-400 uppercase"
+                >
+                  Bo'sh
+                </span>
+              </template>
+            </el-table-column>
+
+            <el-table-column
+              label="Amal"
+              width="100"
+              align="center"
+              fixed="right"
+            >
               <template #default="{ row }">
                 <el-button
                   type="primary"
-                  plain
-                  class="!rounded-xl"
+                  link
+                  class="font-bold"
                   :disabled="isAssigned(row.id)"
                   @click="pick(row)"
                 >
@@ -109,80 +134,73 @@
                 </el-button>
               </template>
             </el-table-column>
-
-            <template #empty>
-              <div class="py-10 text-center">
-                <div class="text-sm font-semibold text-gray-700 dark:text-gray-200">
-                  Xodim topilmadi
-                </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                  Qidiruvni o‘zgartiring yoki sahifani o‘zgartiring.
-                </div>
-              </div>
-            </template>
           </el-table>
 
-          <!-- Pagination -->
-          <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+          <div
+            class="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30"
+          >
             <el-pagination
               v-model:current-page="page"
               v-model:page-size="size"
-              :page-sizes="[10, 20, 50]"
+              small
+              background
+              layout="prev, pager, next"
               :total="total"
-              layout="total, sizes, prev, pager, next"
               @current-change="fetchEmployees"
-              @size-change="onSizeChange"
             />
           </div>
         </div>
 
-        <!-- RIGHT: Selected form -->
-        <div class="lg:col-span-2 rounded-2xl border border-gray-100 dark:border-gray-700 bg-white dark:bg-[#1e222b] p-4">
-          <div class="text-sm font-semibold text-gray-900 dark:text-white">
-            Tanlangan xodim
-          </div>
-          <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Tanlasangiz, ma’lumotlar shu yerda ko‘rinadi
-          </div>
-
-          <div v-if="selected" class="mt-4 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
-            <div class="flex items-center gap-3">
-              <el-image
-                :src="getImageUrl(selected.image)"
-                :preview-src-list="[getImageUrl(selected.image)]"
-                fit="cover"
-                class="w-12 h-12 rounded-full border border-gray-200 dark:border-gray-700 overflow-hidden"
-                preview-teleported
-              />
-              <div class="min-w-0">
-                <div class="font-bold text-gray-900 dark:text-white truncate">
-                  {{ selected.fullNameUz || selected.fullnameuz || "-" }}
-                </div>
-                <div class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">
-                  {{ selected.positionUz || selected.positionuz || "-" }}
-                </div>
+        <div class="lg:col-span-2 flex flex-col gap-4">
+          <div class="card h-full flex flex-col">
+            <div class="card-title mb-6">
+              <div class="card-ico-wrapper">
+                <el-icon class="card-ico"><Check /></el-icon>
+              </div>
+              <div>
+                <div class="ttl">Tanlangan xodim</div>
+                <div class="sub">Tasdiqlashdan oldin tekshiring</div>
               </div>
             </div>
 
-            <!-- Form fields (kerak bo‘lsa) -->
-            <el-form label-position="top" class="mt-4">
-              <!-- <el-form-item label="Employee ID">
-                <el-input :model-value="String(selected.id)" disabled />
-              </el-form-item> -->
-
-              <!-- xohlasang qo‘shimcha fieldlar -->
-              <!-- <el-form-item label="Role (ixtiyoriy)">
-                <el-input v-model="extra.role" placeholder="Masalan: Developer" />
-              </el-form-item> -->
-            </el-form>
-          </div>
-
-          <div v-else class="mt-4 p-6 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700 text-center">
-            <div class="text-sm text-gray-600 dark:text-gray-300 font-semibold">
-              Hali tanlanmadi
+            <div
+              v-if="selected"
+              class="flex-1 flex flex-col justify-center items-center text-center p-6 rounded-2xl border border-blue-100 dark:border-blue-900/30 bg-blue-50/30 dark:bg-blue-900/10"
+            >
+              <el-avatar
+                :size="80"
+                :src="getImageUrl(selected.image)"
+                class="shadow-lg border-4 border-white dark:border-gray-800 mb-4"
+              />
+              <div
+                class="font-bold text-lg text-gray-900 dark:text-white leading-tight"
+              >
+                {{ selected.fullNameUz || selected.fullnameuz || "-" }}
+              </div>
+              <div
+                class="text-sm text-blue-600 dark:text-blue-400 font-medium mt-2"
+              >
+                {{ selected.positionUz || selected.positionuz || "-" }}
+              </div>
             </div>
-            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Chap tomondan xodimni “Tanlash” qiling
+
+            <div
+              v-else
+              class="flex-1 flex flex-col justify-center items-center p-8 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-2xl text-center"
+            >
+              <div
+                class="w-16 h-16 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center mb-4"
+              >
+                <el-icon :size="24" class="text-gray-300"
+                  ><UserFilled
+                /></el-icon>
+              </div>
+              <div class="text-sm font-bold text-gray-400">
+                Xodim tanlanmagan
+              </div>
+              <p class="text-[11px] text-gray-400 mt-2 leading-relaxed">
+                Ro'yxatdan kerakli xodimni toping va "Tanlash" tugmasini bosing
+              </p>
             </div>
           </div>
         </div>
@@ -191,18 +209,19 @@
 
     <template #footer>
       <div class="dlg-footer">
-        <el-button size="large" class="!rounded-xl" @click="closeDialog">
+        <el-button size="large" class="!px-8 !rounded-xl" @click="closeDialog">
           Bekor qilish
         </el-button>
 
         <el-button
           type="primary"
           size="large"
-          class="!rounded-xl !px-8"
+          class="!px-12 !rounded-xl shadow-lg"
           :disabled="!selected"
           :loading="saving"
           @click="submit"
         >
+          <el-icon class="mr-1"><Check /></el-icon>
           Biriktirish
         </el-button>
       </div>
@@ -213,28 +232,18 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { Search, UserFilled } from "@element-plus/icons-vue";
+import { Search, UserFilled, Check } from "@element-plus/icons-vue";
 import api from "@/utils/axios";
 
 const props = defineProps<{
   open: boolean;
   projectId: number;
-
-  /**
-   * Loyihaga biriktirilgan employee list (GET /employee/{projectId})
-   * shundan disable qilish uchun id larni olamiz.
-   */
   projectEmployees: any[];
 }>();
 
 const emit = defineEmits<{
   (e: "update:open", v: boolean): void;
   (e: "assigned"): void;
-
-  /**
-   * Agar xohlasang: tanlangan employee’ni parentga “formga berib yuborish”
-   * parent shu event orqali employee object/id ni oladi.
-   */
   (e: "picked", employee: any): void;
 }>();
 
@@ -243,28 +252,24 @@ const openModel = computed({
   set: (v) => emit("update:open", v),
 });
 
-const dialogWidth = computed(() => "min(1000px, 96vw)");
-
 const loading = ref(false);
 const saving = ref(false);
-
 const rows = ref<any[]>([]);
 const total = ref(0);
 const page = ref(1);
 const size = ref(10);
 const q = ref("");
-
 const selected = ref<any | null>(null);
 
-const assignedIds = computed(() => (props.projectEmployees || []).map((e: any) => e.id));
+const assignedIds = computed(() =>
+  (props.projectEmployees || []).map((e: any) => e.id),
+);
 const isAssigned = (id: number) => assignedIds.value.includes(id);
 
 const rowClass = ({ row }: any) => {
-  const picked = selected.value?.id === row.id;
-  const disabled = isAssigned(row.id);
-  if (picked) return "picked-row";
-  if (disabled) return "disabled-row";
-  return "tbl-row";
+  if (selected.value?.id === row.id) return "picked-row";
+  if (isAssigned(row.id)) return "disabled-row";
+  return "modern-row";
 };
 
 const fetchEmployees = async () => {
@@ -277,13 +282,10 @@ const fetchEmployees = async () => {
         "full-name": q.value.trim() || undefined,
       },
     });
-
     const payload = res.data?.data ?? {};
     rows.value = payload.data ?? [];
     total.value = payload.total ?? 0;
   } catch (e) {
-    rows.value = [];
-    total.value = 0;
     ElMessage.error("Xodimlarni yuklashda xatolik");
   } finally {
     loading.value = false;
@@ -294,129 +296,124 @@ const onSearch = () => {
   page.value = 1;
   fetchEmployees();
 };
-
 const onClear = () => {
   q.value = "";
-  page.value = 1;
-  fetchEmployees();
+  onSearch();
 };
-
-const onSizeChange = (v: number) => {
-  size.value = v;
-  page.value = 1;
-  fetchEmployees();
-};
-
 const pick = (row: any) => {
-  if (isAssigned(row.id)) return;
-  selected.value = row;
-  emit("picked", row); // ✅ “tanlaganda formga berib yuborish”
+  if (!isAssigned(row.id)) selected.value = row;
 };
-
 const closeDialog = () => {
   openModel.value = false;
 };
 
 const submit = async () => {
-  if (!selected.value?.id) {
-    ElMessage.warning("Xodim tanlang");
-    return;
-  }
-
+  if (!selected.value?.id) return;
   saving.value = true;
   try {
     await api.post("/assignment/project", {
       projectId: props.projectId,
       employeeId: selected.value.id,
     });
-
-    ElMessage.success("Xodim biriktirildi");
+    ElMessage.success("Xodim muvaffaqiyatli biriktirildi");
     emit("assigned");
     closeDialog();
   } catch (e: any) {
-    ElMessage.error(e?.response?.data?.message || "Biriktirishda xatolik");
+    ElMessage.error(e?.response?.data?.message || "Xatolik");
   } finally {
     saving.value = false;
   }
 };
 
-
 watch(
   () => props.open,
-  async (v) => {
-    if (!v) return;
-    // modal ochilganda refresh
-    selected.value = null;
-    page.value = 1;
-    await fetchEmployees();
+  (v) => {
+    if (v) {
+      selected.value = null;
+      page.value = 1;
+      fetchEmployees();
+    }
   },
 );
 
 const getImageUrl = (path?: string) => {
   if (!path) return "";
-  return path.startsWith("http") ? path : `https://reestr.das-uty.uz/api/${path}`;
+  return path.startsWith("http")
+    ? path
+    : `https://reestr.das-uty.uz/api/${path}`;
 };
 </script>
 
 <style scoped>
-.assign-emp-dialog :deep(.el-dialog) {
+.assign-emp-dialog-fixed :deep(.el-dialog) {
   @apply bg-white dark:bg-gray-900 rounded-2xl shadow-2xl overflow-hidden;
-  max-height: 85vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   margin: auto !important;
 }
-.assign-emp-dialog :deep(.el-dialog__header),
-.assign-emp-dialog :deep(.el-dialog__footer) {
-  @apply !p-0;
-  flex-shrink: 0;
-}
-.assign-emp-dialog :deep(.el-dialog__body) {
-  @apply !p-0;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
-}
 
 .dlg-header {
-  @apply flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900;
+  @apply flex items-center gap-4 px-8 py-6 border-b border-gray-100 dark:border-gray-800;
 }
+
 .dlg-icon {
-  @apply w-11 h-11 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg;
+  @apply w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg;
 }
-.dlg-body {
-  @apply px-6 py-6;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
+
+.dlg-body-scroll {
+  @apply px-10 py-8 flex-1 overflow-y-auto;
 }
+
+/* Card Style */
+.card {
+  @apply rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30 p-5;
+}
+.card-title {
+  @apply flex items-center gap-3;
+}
+.card-ico-wrapper {
+  @apply w-10 h-10 rounded-xl bg-white dark:bg-gray-800 flex items-center justify-center shadow-sm border border-gray-100 dark:border-gray-700;
+}
+.card-ico {
+  @apply text-blue-600 dark:text-blue-400 text-lg;
+}
+.ttl {
+  @apply text-[15px] font-bold text-gray-900 dark:text-white leading-none;
+}
+.sub {
+  @apply text-[11px] text-gray-500 dark:text-gray-400 mt-1;
+}
+
+/* Input Dizayni (1:1) */
+.modern-inp :deep(.el-input__wrapper) {
+  @apply !rounded-xl !shadow-none bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 h-12 px-4 transition-all;
+}
+.modern-inp :deep(.el-input__wrapper.is-focus) {
+  @apply border-blue-500 ring-4 ring-blue-500/10;
+}
+
+/* Table Style */
+.modern-table {
+  @apply !bg-transparent;
+}
+:deep(.el-table__header th.el-table__cell) {
+  @apply !bg-gray-50/50 dark:!bg-gray-900 !text-gray-500 text-[11px] font-bold uppercase py-3 border-b border-gray-100 dark:border-gray-800;
+}
+:deep(.el-table__row) {
+  @apply !bg-transparent;
+}
+:deep(.el-table__cell) {
+  @apply border-b border-gray-50 dark:border-gray-800/50;
+}
+:deep(.picked-row) {
+  @apply !bg-blue-50/50 dark:!bg-blue-900/10;
+}
+:deep(.disabled-row) {
+  @apply opacity-50 grayscale;
+}
+
 .dlg-footer {
-  @apply flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50;
-}
-
-:deep(.tbl-head) {
-  @apply bg-gray-50 dark:bg-[#0f172a] text-gray-600 dark:text-gray-300 font-semibold;
-}
-:deep(.el-table__header-wrapper th.el-table__cell) {
-  @apply bg-gray-50 dark:bg-[#0f172a];
-}
-:deep(.tbl-row) td.el-table__cell {
-  @apply border-gray-200 dark:border-gray-700;
-}
-:deep(.el-table__row--striped td.el-table__cell) {
-  @apply dark:bg-white/5;
-}
-:deep(.el-table__body tr:hover > td.el-table__cell) {
-  @apply bg-gray-50/60 dark:bg-white/10 transition-colors;
-}
-
-/* selected row */
-:deep(.picked-row) td.el-table__cell {
-  @apply bg-blue-500/10 dark:bg-blue-400/10;
-}
-
-/* assigned row (disabled look) */
-:deep(.disabled-row) td.el-table__cell {
-  @apply opacity-60;
+  @apply flex items-center justify-end gap-4 px-8 py-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-800/20;
 }
 </style>

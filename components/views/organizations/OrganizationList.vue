@@ -102,7 +102,7 @@
     <!-- FOOTER pinned -->
     <div class="list-footer">
       <div class="text-sm text-gray-600 dark:text-gray-400">
-        Jami:
+        {{ $t("total") }}:
         <span class="font-semibold text-gray-800 dark:text-gray-200">
           {{ total }}
         </span>
